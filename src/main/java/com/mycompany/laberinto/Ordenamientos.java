@@ -1,0 +1,111 @@
+package com.mycompany.laberinto;
+
+import java.util.*;
+
+public class Ordenamientos {
+
+    public ArrayList<Nodo> bfs(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas) {
+        Queue<Nodo> cola = new LinkedList<>();
+        boolean[] visitados = new boolean[filas * columnas];
+        Map<Nodo, Nodo> paresDeVecinos = new HashMap<>();
+        int indexOrigen = origen.posicion(columnas);
+        visitados[indexOrigen] = true;
+        cola.add(origen);
+
+        while (!cola.isEmpty()) {
+            Nodo actual = cola.poll();
+
+            if (actual.equals(destino)) {
+                break;
+            }
+
+            int indexActual = actual.posicion(columnas);
+
+            for (Nodo vecino : listaGrafo.get(indexActual)) {
+                int indexVecino = vecino.posicion(columnas);
+                if (!visitados[indexVecino]) {
+                    visitados[indexVecino] = true;
+                    paresDeVecinos.put(vecino, actual);
+                    cola.add(vecino);
+                }
+            }
+        }
+
+        /* Esta parte fue implementada con IA, se utilizó para recorrer el camino generado y ordenarlo al reves,
+         * ya que en el BFS se guarda en sentido opuesto
+         */
+        ArrayList<Nodo> camino = new ArrayList<>();
+        Nodo actual = destino;
+        while (actual != null && !actual.equals(origen)) {
+            camino.add(actual);
+            actual = paresDeVecinos.get(actual);
+        }
+
+        if (actual != null) {
+            camino.add(origen);
+        }
+
+        Collections.reverse(camino);
+
+        return camino;
+    }
+
+    public ArrayList<Nodo> aEstrella(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas, ArrayList<ArrayList<Nodo>> nodos) {
+        PriorityQueue<Nodo> noVisitados = new PriorityQueue<>();
+        boolean[] visitados = new boolean[filas * columnas];
+        int fila = origen.getY();
+        int columna = origen.getX();
+        Nodo inicio = nodos.get(fila).get(columna);
+        fila = destino.getY();
+        columna = destino.getX();
+        Nodo meta = nodos.get(fila).get(columna);
+        inicio.setG(0);
+        inicio.setF(calcularH(inicio, meta));
+        noVisitados.add(inicio);
+
+        while (!noVisitados.isEmpty()) {
+            Nodo actual = noVisitados.poll();
+            int indexActual = actual.posicion(columnas);
+            int indexMeta = meta.posicion(columnas);
+
+            if (indexActual == indexMeta) {
+                ArrayList<Nodo> camino = new ArrayList<>();
+                while (actual != null) {
+                    camino.add(actual);
+                    actual = actual.getPadre();
+                }
+                Collections.reverse(camino);
+                return camino;
+            }
+
+            visitados[indexActual] = true;
+
+            for (Nodo vecino : listaGrafo.get(actual.posicion(columnas))) {
+                if (visitados[vecino.posicion(columnas)]) continue;
+
+                fila = vecino.getY();
+                columna = vecino.getX();
+                Nodo vecinoNuevo = nodos.get(fila).get(columna);
+                int salidaG = actual.getG() + 1;
+
+                if (vecinoNuevo.getPadre() == null || salidaG < vecinoNuevo.getG()) {
+                    vecinoNuevo.setPadre(actual);
+                    vecinoNuevo.setG(salidaG);
+                    vecinoNuevo.setF(salidaG + calcularH(vecinoNuevo, meta));
+
+                    if (!noVisitados.contains(vecinoNuevo)) {
+                        noVisitados.add(vecinoNuevo);
+                    } else {
+                        noVisitados.remove(vecinoNuevo);
+                        noVisitados.add(vecinoNuevo);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private int calcularH(Nodo nodo1, Nodo nodo2) {
+        return Math.abs(nodo1.getX() - nodo2.getX()) + Math.abs(nodo1.getY() - nodo2.getY());
+    }
+}
