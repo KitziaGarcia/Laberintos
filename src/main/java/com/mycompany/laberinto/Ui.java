@@ -20,9 +20,16 @@ public class Ui extends JFrame {
     private JButton bfsBoton;
     private JButton aEstrellaBoton;
     private JButton borrarBoton;
+    private JButton dijkstra;
+    private JLabel tiempos;
+    private JTextArea informacionTiempos;
+    private double tiempoSegAEstrella;
+    private double tiempoSegBFS;
 
-    public Ui() {
+    public Ui(int dificultad) {
         initComponents();
+        double tiempoSegAEstrella = 100;
+        double tiempoSegBFS = 100;
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
@@ -33,12 +40,33 @@ public class Ui extends JFrame {
 
         grafo.setPreferredSize(new Dimension(600, 600));
 
-        generarYMostrarLaberintoAleatorio(4);
+        generarYMostrarLaberintoAleatorio(dificultad);
         
         setTitle("Ventana de Laberintos");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+    }
+
+    //para cuando el usuario ingrese su laberinto
+    public Ui(int[][] matriz) {
+        initComponents();
+        laberintoPanel = new LaberintoPanel();
+        generadorDeLaberinto = new GeneradorDeLaberinto();
+        metodosOrdenamientos = new Ordenamientos();
+        JScrollPane scrollPane = new JScrollPane(laberintoPanel);
+
+        grafo.setLayout(new BorderLayout());
+        grafo.add(scrollPane, BorderLayout.CENTER);
+
+        grafo.setPreferredSize(new Dimension(600, 600));
+
+        generarYMostrarLaberintoUsuario(matriz);
+
+        setTitle("Ventana de Laberintos");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 
     private void generarYMostrarLaberintoAleatorio(int dificultad) {
@@ -50,6 +78,15 @@ public class Ui extends JFrame {
         generadorDeLaberinto.dibujarMatrizConsola(matrizLaberinto, laberintoGrafo);
     }
 
+    //para cuando el usuario ingrese un laberinto
+    private void generarYMostrarLaberintoUsuario(int[][] matriz) {
+        this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
+        laberintoPanel.setLaberinto(this.laberintoGrafo);
+        repaint();
+        System.out.println("Laberinto generado:");
+        generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -57,7 +94,16 @@ public class Ui extends JFrame {
         grafo = new JPanel();
         bfsBoton = new JButton("Algoritmo BFS");
         aEstrellaBoton = new JButton("Algoritmo A*");
+        dijkstra = new JButton("Algoritmo Dijkstra"); //no hace nada, falta poner el algoritmo
         borrarBoton = new JButton("Borrar");
+        tiempos = new JLabel("Informacion tiempos");
+        informacionTiempos = new JTextArea();
+
+        bfsBoton.setFocusPainted(false);
+        aEstrellaBoton.setFocusPainted(false);
+        dijkstra.setFocusPainted(false);
+        borrarBoton.setFocusPainted(false);
+        informacionTiempos.setEditable(false);
 
         GroupLayout GtafoLayout = new GroupLayout(grafo);
         grafo.setLayout(GtafoLayout);
@@ -74,15 +120,19 @@ public class Ui extends JFrame {
             public void actionPerformed(ActionEvent evt) {
                 //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi.
                 laberintoPanel.setIndicadorParaBorrarCamino(0);
+                long tiempoInicio = System.nanoTime();
                 ArrayList<Nodo> lista = metodosOrdenamientos.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
                 laberintoPanel.setCaminoResuelto(lista);
+                long tiempoFinal = System.nanoTime();
+                tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
             }
         });
 
         aEstrellaBoton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi.
+                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi. DAAAAABB
                 for (ArrayList<Nodo> fila : laberintoGrafo.getNodos()) {
                     for (Nodo nodo : fila) {
                         nodo.setG(Integer.MAX_VALUE);
@@ -93,9 +143,13 @@ public class Ui extends JFrame {
                 }
 
                 laberintoPanel.setIndicadorParaBorrarCamino(0);
+                long tiempoInicio = System.nanoTime();
                 ArrayList<Nodo> lista = metodosOrdenamientos.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                 System.out.println(lista);
                 laberintoPanel.setCaminoResuelto(lista);
+                long tiempoFinal = System.nanoTime();
+                tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegAEstrella));
             }
         });
 
@@ -104,6 +158,7 @@ public class Ui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 laberintoPanel.setIndicadorParaBorrarCamino(1);
                 repaint();
+                informacionTiempos.setText("");
             }
         });
 
@@ -119,7 +174,10 @@ public class Ui extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(bfsBoton)
                                         .addComponent(aEstrellaBoton)
-                                        .addComponent(borrarBoton))
+                                        .addComponent(dijkstra)
+                                        .addComponent(borrarBoton)
+                                        .addComponent(tiempos)
+                                        .addComponent(informacionTiempos))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -134,7 +192,12 @@ public class Ui extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(aEstrellaBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(borrarBoton))
+                                                .addComponent(dijkstra)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(borrarBoton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(tiempos)
+                                                .addComponent(informacionTiempos))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addContainerGap()
                                                 .addComponent(grafo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
@@ -151,8 +214,9 @@ public class Ui extends JFrame {
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
-                new Ui().setVisible(true);
+                new Ui(1).setVisible(true);
             }
         });
     }

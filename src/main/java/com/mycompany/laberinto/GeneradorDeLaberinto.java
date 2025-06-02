@@ -1,9 +1,6 @@
 package com.mycompany.laberinto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class GeneradorDeLaberinto {
     private ArrayList<ArrayList<Nodo>> listaAdyacencia;
@@ -33,8 +30,8 @@ public class GeneradorDeLaberinto {
                 columnas = 35;
                 break;
             default:
-                filas = 11;
-                columnas = 11;
+                filas = dificultad;
+                columnas = dificultad;
                 break;
         }
 
@@ -90,6 +87,59 @@ public class GeneradorDeLaberinto {
         return celdas;
     }
 
+    public int[][] generarMatrizDesdeListaAdyacenciaParedes(Map<Integer, List<Integer>> listaAdyacencia) {
+        Set<Integer> nodos = new HashSet<>(listaAdyacencia.keySet());
+        for (List<Integer> vecinos : listaAdyacencia.values()) {
+            if (vecinos != null) {
+                nodos.addAll(vecinos);
+            }
+        }
+
+        if (!nodos.contains(0)) {
+            throw new IllegalArgumentException("La lista no tiene un nodo 0");
+        }
+
+        List<Integer> nodosOrdenados = new ArrayList<>(nodos);
+        nodosOrdenados.remove(Integer.valueOf(0));
+        Collections.sort(nodosOrdenados);
+        nodosOrdenados.add(0, 0);
+
+        Map<Integer, Integer> nodoAIndice = new HashMap<>();
+        for(int i = 0; i < nodosOrdenados.size(); i++){
+            nodoAIndice.put(nodosOrdenados.get(i), i);
+        }
+
+        int n = nodosOrdenados.size();
+        int[][] matriz = new int[n][n];
+
+        for(int i = 0; i < n; i++){
+            Arrays.fill(matriz[i], 1);
+        }
+
+        for(int i = 0; i < n; i++){
+            matriz[i][i] = 0;
+        }
+
+        for(Map.Entry<Integer, List<Integer>> entry : listaAdyacencia.entrySet()){
+            int nodo = entry.getKey();
+            Integer indiceNodo = nodoAIndice.get(nodo);
+
+            if(indiceNodo == null) continue;
+
+            List<Integer> vecinos = entry.getValue();
+            if(vecinos == null) continue;
+
+            for(Integer vecino : vecinos){
+                Integer indiceVecino = nodoAIndice.get(vecino);
+
+                if(indiceVecino != null){
+                    matriz[indiceNodo][indiceVecino] = 0;
+                    matriz[indiceVecino][indiceNodo] = 0;
+                }
+            }
+        }
+        return matriz;
+    }
 
     public LaberintoGrafo generarLaberinto(int[][] matrizCeldas) {
         if (matrizCeldas == null || matrizCeldas.length == 0 || matrizCeldas[0].length == 0) {
