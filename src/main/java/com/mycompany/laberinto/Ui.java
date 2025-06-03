@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
@@ -30,6 +32,9 @@ public class Ui extends JFrame {
     private double tiempoSegAEstrella;
     private double tiempoSegBFS;
     private double tiempoSegDisjktra;
+    private boolean indicador1;
+    private boolean indicador2;
+    private boolean indicador3;
 
 
     public Ui(int dificultad) {
@@ -140,7 +145,9 @@ public class Ui extends JFrame {
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
-                    laberintoPanel.setCaminoResuelto(lista,1);
+                    laberintoPanel.setColor(1);
+                    laberintoPanel.setCaminoResuelto(lista);
+                    indicador1 = true;
                     long tiempoFinal = System.nanoTime();
                     tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
@@ -161,7 +168,10 @@ public class Ui extends JFrame {
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
-                    laberintoPanel.setCaminoResuelto(lista,2);
+                    indicador2 = true;
+                    laberintoPanel.setColor(2);
+                    System.out.println("COLORIOT: " + laberintoPanel.getColor());
+                    laberintoPanel.setCaminoResuelto(lista);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
@@ -173,7 +183,9 @@ public class Ui extends JFrame {
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
-                    laberintoPanel.setCaminoResuelto(lista,3);
+                    laberintoPanel.setColor(3);
+                    laberintoPanel.setCaminoResuelto(lista);
+                    indicador3 = true;
                     System.out.println(lista);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
@@ -198,17 +210,28 @@ public class Ui extends JFrame {
                         int inicioInfoTiempo = informacionTiempos.getLineStartOffset(indiceMenorTiempo);
                         int finInfoTiempo = informacionTiempos.getLineEndOffset(indiceMenorTiempo);
                         highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
-                        switch (indiceMenorTiempo){
+
+                        System.out.println("\n------------\n" + tiemposEjecutados);
+                        switch (indiceMenorTiempo) {
                             case 0:
-                                laberintoPanel.setColor(1);
+                                if (indicador1) {
+                                    laberintoPanel.setColor(1);
+                                }
                                 break;
                             case 1:
-                                laberintoPanel.setColor(2);
+                                if (indicador2) {
+                                    laberintoPanel.setColor(2);
+                                }
                                 break;
                             case 2:
-                                laberintoPanel.setColor(3);
+                                if (indicador3) {
+                                    laberintoPanel.setColor(3);
+                                }
                                 break;
                         }
+                        indicador1 = false;
+                        indicador2 = false;
+                        indicador3 = false;
                     } catch (BadLocationException ex) {
                         throw new RuntimeException(ex);
                     }

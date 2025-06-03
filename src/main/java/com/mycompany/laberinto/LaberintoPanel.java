@@ -37,6 +37,7 @@ public class LaberintoPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        System.out.println("COLORRRRRRRRRRRRRRR: " + getColor());
         if (grafo == null || grafo.getNodos() == null || grafo.getFilas() == 0 || grafo.getColumnas() == 0) {
             return;
         }
@@ -78,8 +79,6 @@ public class LaberintoPanel extends JPanel {
                 g2d.setColor(Color.WHITE);
                 
                 List<Nodo> vecinos = nodoActual.getVecinos();
-                System.out.println("Nodo (" + i + ", " + j + ") tiene " + vecinos.size() + " vecinos.");
-
 
                 for (Nodo vecino : vecinos) {
                     if (vecino.getY() == nodoActual.getY() + 1) {
@@ -101,6 +100,7 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
+            System.out.println("\nHOLAAAAAAAAAAAAAAAAAAAAAAA\n" + getColor());
             pintarCamino(g2d);
         }
     }
@@ -143,7 +143,8 @@ public class LaberintoPanel extends JPanel {
                     if (indicadorParaBorrarCamino == 1) {
                         g2d.setColor(Color.WHITE);
                     } else {
-                        switch (this.color) {
+                        System.out.println("COLOR: " + getColor());
+                        switch (getColor()) {
                             case 1:
                                 g2d.setColor(new Color(194, 84, 253));
                                 break;
@@ -153,7 +154,6 @@ public class LaberintoPanel extends JPanel {
                             case 3:
                                 g2d.setColor(new Color(53, 91, 227));
                                 break;
-
                         }
 
                     }
@@ -164,9 +164,9 @@ public class LaberintoPanel extends JPanel {
         }
     }
 
-    public void setCaminoResuelto(ArrayList<Nodo> camino, int color) {
+    public void setCaminoResuelto(ArrayList<Nodo> camino) {
         this.caminoResuelto = camino;
-        this.color = color;
+        System.out.println("\nPELOOOOOOOOOON: " + getColor());
         repaint();
     }
 
@@ -176,5 +176,9 @@ public class LaberintoPanel extends JPanel {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 }
