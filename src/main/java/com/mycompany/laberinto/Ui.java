@@ -189,6 +189,7 @@ public class Ui extends JFrame {
                         if (tiemposEjecutados.get(i) < menorTiempo) {
                             menorTiempo = tiemposEjecutados.get(i);
                             indiceMenorTiempo = i;
+
                         }
                     }
                     Highlighter highlighter = informacionTiempos.getHighlighter();
@@ -197,6 +198,17 @@ public class Ui extends JFrame {
                         int inicioInfoTiempo = informacionTiempos.getLineStartOffset(indiceMenorTiempo);
                         int finInfoTiempo = informacionTiempos.getLineEndOffset(indiceMenorTiempo);
                         highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
+                        switch (indiceMenorTiempo){
+                            case 0:
+                                laberintoPanel.setColor(1);
+                                break;
+                            case 1:
+                                laberintoPanel.setColor(2);
+                                break;
+                            case 2:
+                                laberintoPanel.setColor(3);
+                                break;
+                        }
                     } catch (BadLocationException ex) {
                         throw new RuntimeException(ex);
                     }

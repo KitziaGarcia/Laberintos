@@ -43,45 +43,45 @@ public class GeneradorDeLaberinto {
             }
         }
 
-        Stack<int[]> stack = new Stack<>();
-        int startCol = 1; 
-        int startRow = 1;
+        Stack<int[]> fila = new Stack<>();
+        int inicioCol = 1;
+        int inicioFil = 1;
 
-        celdas[startRow][startCol] = 0; 
-        stack.push(new int[]{startCol, startRow});
+        celdas[inicioFil][inicioCol] = 0;
+        fila.push(new int[]{inicioCol, inicioFil});
 
-        while(!stack.isEmpty()){
-            int[] current = stack.peek();
-            int currentCol = current[0];
-            int currentRow = current[1];
+        while(!fila.isEmpty()){
+            int[] actual = fila.peek();
+            int colActual = actual[0];
+            int filaActual = actual[1];
 
-            List<int[]> neighborsDirs = new ArrayList<>();
+            List<int[]> direccionesVecinos = new ArrayList<>();
             
-            int[][] directions = {{0,-2,0,-1}, {0,2,0,1}, {-2,0,-1,0}, {2,0,1,0}};
+            int[][] direcciones = {{0,-2,0,-1}, {0,2,0,1}, {-2,0,-1,0}, {2,0,1,0}};
 
-            for(int[] dir : directions){
-                int nextCol = currentCol + dir[0];
-                int nextRow = currentRow + dir[1];
+            for(int[] dir : direcciones){
+                int sigCol = colActual + dir[0];
+                int sigFila = filaActual + dir[1];
                 
-                if(nextRow > 0 && nextRow < filas - 1 && nextCol > 0 && nextCol < columnas - 1 && celdas[nextRow][nextCol] == 1){
-                    neighborsDirs.add(dir);
+                if(sigFila > 0 && sigFila < filas - 1 && sigCol > 0 && sigCol < columnas - 1 && celdas[sigFila][sigCol] == 1){
+                    direccionesVecinos.add(dir);
                 }
             }
 
-            if(!neighborsDirs.isEmpty()){
-                Collections.shuffle(neighborsDirs); 
-                int[] chosenDir = neighborsDirs.get(0);
+            if(!direccionesVecinos.isEmpty()){
+                Collections.shuffle(direccionesVecinos);
+                int[] direccionElegida = direccionesVecinos.get(0);
                 
-                int wallCol = currentCol + chosenDir[2];
-                int wallRow = currentRow + chosenDir[3];
-                celdas[wallRow][wallCol] = 0; 
+                int paredCol = colActual + direccionElegida[2];
+                int paredFila = filaActual + direccionElegida[3];
+                celdas[paredFila][paredCol] = 0;
 
-                int nextCol = currentCol + chosenDir[0];
-                int nextRow = currentRow + chosenDir[1];
-                celdas[nextRow][nextCol] = 0; 
-                stack.push(new int[]{nextCol, nextRow});
+                int sigCol = colActual + direccionElegida[0];
+                int sigFila = filaActual + direccionElegida[1];
+                celdas[sigFila][sigCol] = 0;
+                fila.push(new int[]{sigCol, sigFila});
             } else {
-                stack.pop(); 
+                fila.pop();
             }
         }
         return celdas;

@@ -111,11 +111,11 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
-            pintarCamino(g2d, color);
+            pintarCamino(g2d);
         }
     }
 
-    private void pintarCamino(Graphics2D g2d, int color) {
+    private void pintarCamino(Graphics2D g2d) {
         anchoPanel = getWidth();
         altoPanel = getHeight();
         filas = grafo.getFilas();
@@ -139,7 +139,7 @@ public class LaberintoPanel extends JPanel {
                     if (indicadorParaBorrarCamino == 1) {
                         g2d.setColor(Color.WHITE);
                     } else {
-                        switch (color) {
+                        switch (this.color) {
                             case 1:
                                 g2d.setColor(new Color(194, 84, 253));
                                 break;
@@ -167,5 +167,9 @@ public class LaberintoPanel extends JPanel {
 
     public void setIndicadorParaBorrarCamino(int indicadorParaBorrarCamino) {
         this.indicadorParaBorrarCamino = indicadorParaBorrarCamino;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
