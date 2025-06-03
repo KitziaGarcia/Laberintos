@@ -50,24 +50,24 @@ public class MenuInicio extends JFrame {
             int[][] matriz = null;
 
             try {
-                for (String nodo : nodos) {
-                    String[] partesNodo = nodo.split(":");
-                    if (partesNodo.length == 2) {
+                for(int i=1; i<nodos.length; i++){
+                    String[] partesNodo = nodos[i].split(":");
+                    if(partesNodo.length == 2){
                         int nodoActual = Integer.parseInt(partesNodo[0]);
                         List<Integer> vecinos = new ArrayList<>();
                         String[] vecinosStr = partesNodo[1].split(",");
-                        for (String vecino : vecinosStr) {
+                        for(String vecino : vecinosStr){
                             vecinos.add(Integer.parseInt(vecino.trim()));
                         }
                         listaAdyacencia.put(nodoActual, vecinos);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Formato incorrecto en la lista de adyacencia.");
+                        JOptionPane.showMessageDialog(null, "Formato incorrecto en la lista de adyacencia");
                         return;
                     }
                 }
 
                 GeneradorDeLaberinto laberintos = new GeneradorDeLaberinto();
-                matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(listaAdyacencia, 0);
+                matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(listaAdyacencia, 1);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Error");
             }

@@ -29,10 +29,10 @@ public class Nodo implements Comparable<Nodo> {
     
     
     public void conectarVecino(Nodo vecino) {
-        if (esVecinoAdyacente(vecino) && !this.vecinos.contains(vecino)) {
+        if(esVecinoAdyacente(vecino) && !this.vecinos.contains(vecino)){
             this.vecinos.add(vecino);
             
-            if (!vecino.vecinos.contains(this)) {
+            if(!vecino.vecinos.contains(this)){
                 vecino.vecinos.add(this);
             }
             //System.out.println("NODIUX: " + this);

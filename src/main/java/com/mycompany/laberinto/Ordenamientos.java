@@ -12,18 +12,18 @@ public class Ordenamientos {
         visitados[indexOrigen] = true;
         cola.add(origen);
 
-        while (!cola.isEmpty()) {
+        while(!cola.isEmpty()){
             Nodo actual = cola.poll();
 
-            if (actual.equals(destino)) {
+            if(actual.equals(destino)){
                 break;
             }
 
             int indexActual = actual.posicion(columnas);
 
-            for (Nodo vecino : listaGrafo.get(indexActual)) {
+            for(Nodo vecino : listaGrafo.get(indexActual)){
                 int indexVecino = vecino.posicion(columnas);
-                if (!visitados[indexVecino]) {
+                if(!visitados[indexVecino]){
                     visitados[indexVecino] = true;
                     paresDeVecinos.put(vecino, actual);
                     cola.add(vecino);
@@ -36,12 +36,12 @@ public class Ordenamientos {
          */
         ArrayList<Nodo> camino = new ArrayList<>();
         Nodo actual = destino;
-        while (actual != null && !actual.equals(origen)) {
+        while(actual != null && !actual.equals(origen)){
             camino.add(actual);
             actual = paresDeVecinos.get(actual);
         }
 
-        if (actual != null) {
+        if(actual != null){
             camino.add(origen);
         }
 
@@ -63,14 +63,14 @@ public class Ordenamientos {
         inicio.setF(calcularH(inicio, meta));
         noVisitados.add(inicio);
 
-        while (!noVisitados.isEmpty()) {
+        while(!noVisitados.isEmpty()){
             Nodo actual = noVisitados.poll();
             int indexActual = actual.posicion(columnas);
             int indexMeta = meta.posicion(columnas);
 
-            if (indexActual == indexMeta) {
+            if(indexActual == indexMeta){
                 ArrayList<Nodo> camino = new ArrayList<>();
-                while (actual != null) {
+                while(actual != null){
                     camino.add(actual);
                     actual = actual.getPadre();
                 }
@@ -80,20 +80,20 @@ public class Ordenamientos {
 
             visitados[indexActual] = true;
 
-            for (Nodo vecino : listaGrafo.get(actual.posicion(columnas))) {
-                if (visitados[vecino.posicion(columnas)]) continue;
+            for(Nodo vecino : listaGrafo.get(actual.posicion(columnas))){
+                if(visitados[vecino.posicion(columnas)]) continue;
 
                 fila = vecino.getY();
                 columna = vecino.getX();
                 Nodo vecinoNuevo = nodos.get(fila).get(columna);
                 int salidaG = actual.getG() + 1;
 
-                if (vecinoNuevo.getPadre() == null || salidaG < vecinoNuevo.getG()) {
+                if(vecinoNuevo.getPadre() == null || salidaG < vecinoNuevo.getG()){
                     vecinoNuevo.setPadre(actual);
                     vecinoNuevo.setG(salidaG);
                     vecinoNuevo.setF(salidaG + calcularH(vecinoNuevo, meta));
 
-                    if (!noVisitados.contains(vecinoNuevo)) {
+                    if(!noVisitados.contains(vecinoNuevo)){
                         noVisitados.add(vecinoNuevo);
                     } else {
                         noVisitados.remove(vecinoNuevo);
@@ -113,8 +113,8 @@ public class Ordenamientos {
         PriorityQueue<Nodo> noVisitados = new PriorityQueue<>();
         boolean[] visitados = new boolean[filas * columnas];
 
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
+        for(int i = 0; i < filas; i++){
+            for(int j = 0; j < columnas; j++){
                 nodos.get(i).get(j).setG(Integer.MAX_VALUE);
                 nodos.get(i).get(j).setPadre(null);
             }
@@ -125,17 +125,17 @@ public class Ordenamientos {
         noVisitados.add(nodoOrigen);
         Nodo nodoDestino = nodos.get(destino.getY()).get(destino.getX());
 
-        while (!noVisitados.isEmpty()) {
+        while(!noVisitados.isEmpty()){
             Nodo actual = noVisitados.poll();
             int indexActual = actual.posicion(columnas);
 
-            if (visitados[indexActual]) continue;
+            if(visitados[indexActual]) continue;
             visitados[indexActual] = true;
 
-            if (actual.equals(nodoDestino)) {
+            if(actual.equals(nodoDestino)){
                 ArrayList<Nodo> caminoRecorrido = new ArrayList<>();
                 Nodo nodoActual = actual;
-                while (nodoActual != null) {
+                while(nodoActual != null){
                     caminoRecorrido.add(nodoActual);
                     nodoActual = nodoActual.getPadre();
                 }
@@ -143,14 +143,14 @@ public class Ordenamientos {
                 return caminoRecorrido;
             }
 
-            for (Nodo vecino : listaGrafo.get(indexActual)) {
+            for(Nodo vecino : listaGrafo.get(indexActual)){
                 int indexVecino = vecino.posicion(columnas);
-                if (visitados[indexVecino]) continue;
+                if(visitados[indexVecino]) continue;
 
                 Nodo vecinoNodo = nodos.get(vecino.getY()).get(vecino.getX());
                 int nuevaDistancia = actual.getG() + 1;
 
-                if (nuevaDistancia < vecinoNodo.getG()) {
+                if(nuevaDistancia < vecinoNodo.getG()){
                     vecinoNodo.setG(nuevaDistancia);
                     vecinoNodo.setPadre(actual);
                     noVisitados.add(vecinoNodo);
