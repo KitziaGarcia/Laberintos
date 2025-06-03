@@ -22,6 +22,7 @@ public class Ui extends JFrame {
     private JPanel grafo;
     private JButton borrarBoton;
     private JButton ingresarCsvBoton;
+    private JButton regresarMenu;
     private JLabel tiempos;
     private JTextArea informacionTiempos;
     private JCheckBox bfsBoton;
@@ -115,10 +116,12 @@ public class Ui extends JFrame {
         aBoton = new JCheckBox("Algoritmo A*");
         dijBoton = new JCheckBox("Algoritmo Dijkstra");
         seleccionar = new JButton("DAB"); //cambiar el nombre de esto
+        regresarMenu = new JButton("Regresar al menu");
 
         //para quitarle la cosa feo del boton
         borrarBoton.setFocusPainted(false);
         seleccionar.setFocusPainted(false);
+        regresarMenu.setFocusPainted(false);
         informacionTiempos.setEditable(false);
 
         GroupLayout GrafoLayout = new GroupLayout(grafo);
@@ -171,6 +174,15 @@ public class Ui extends JFrame {
                 bfsBoton.setSelected(false);
                 aBoton.setSelected(false);
                 dijBoton.setSelected(false);
+            }
+        });
+
+        regresarMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MenuInicio menuInicio = new MenuInicio();
+                menuInicio.setVisible(true);
+                dispose();
             }
         });
 
@@ -266,6 +278,7 @@ public class Ui extends JFrame {
                                         .addComponent(aBoton)
                                         .addComponent(dijBoton)
                                         .addComponent(borrarBoton)
+                                        .addComponent(regresarMenu)
                                         .addComponent(seleccionar)
                                         .addComponent(tiempos)
                                         .addComponent(informacionTiempos))
@@ -287,6 +300,8 @@ public class Ui extends JFrame {
                                                 .addComponent(dijBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(borrarBoton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(regresarMenu)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(seleccionar)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
