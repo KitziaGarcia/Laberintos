@@ -34,8 +34,6 @@ public class Ui extends JFrame {
 
     public Ui(int dificultad) {
         initComponents();
-        tiempoSegAEstrella = 100;
-        tiempoSegBFS = 100;
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
@@ -57,16 +55,14 @@ public class Ui extends JFrame {
     //para cuando el usuario ingrese su laberinto
     public Ui(int[][] matriz) {
         initComponents();
-        generarYMostrarLaberintoUsuario(matriz);
-        generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
+
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
-        JScrollPane scrollPane = new JScrollPane(laberintoPanel);
 
+        JScrollPane scrollPane = new JScrollPane(laberintoPanel);
         grafo.setLayout(new BorderLayout());
         grafo.add(scrollPane, BorderLayout.CENTER);
-
         grafo.setPreferredSize(new Dimension(600, 600));
 
         generarYMostrarLaberintoUsuario(matriz);
@@ -74,8 +70,8 @@ public class Ui extends JFrame {
         setTitle("Ventana de Laberintos");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
+
 
     private void generarYMostrarLaberintoAleatorio(int dificultad) {
         int[][] matriz = generadorDeLaberinto.generarMatriz(dificultad);
@@ -183,10 +179,10 @@ public class Ui extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 informacionTiempos.setText("");
-                int tiempoMenor;
+                int tiempoMenor = 0;
+                ArrayList<Double> tiemposEjecutados = new ArrayList<>();
 
                 if(bfsBoton.isSelected()){
-                    tiempoSegBFS = 10;
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosOrdenamientos.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
@@ -194,10 +190,10 @@ public class Ui extends JFrame {
                     long tiempoFinal = System.nanoTime();
                     tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
+                    tiemposEjecutados.add(tiempoSegBFS);
                 }
 
                 if(aBoton.isSelected()){
-                    tiempoSegAEstrella = 10;
                     for (ArrayList<Nodo> fila : laberintoGrafo.getNodos()) {
                         for (Nodo nodo : fila) {
                             nodo.setG(Integer.MAX_VALUE);
@@ -215,10 +211,10 @@ public class Ui extends JFrame {
                     long tiempoFinal = System.nanoTime();
                     tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
+                    tiemposEjecutados.add(tiempoSegAEstrella);
                 }
 
                 if(dijBoton.isSelected()){
-                    tiempoSegDisjktra = 10;
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosOrdenamientos.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
@@ -228,27 +224,31 @@ public class Ui extends JFrame {
                     long tiempoFinal = System.nanoTime();
                     tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("Disjktra: %.6f segundos\n", tiempoSegDisjktra));
+                    tiemposEjecutados.add(tiempoSegDisjktra);
                 }
 
-                if(tiempoSegBFS < tiempoSegAEstrella && tiempoSegBFS < tiempoSegDisjktra){
-                    tiempoMenor = 0;
-                } else if(tiempoSegAEstrella < tiempoSegDisjktra && tiempoSegAEstrella < tiempoSegBFS){
-                    tiempoMenor = 1;
-                } else{
-                    tiempoMenor = 2;
+                if (!tiemposEjecutados.isEmpty()) {
+                    int indiceMenorTiempo = 0;
+                    double menorTiempo = tiemposEjecutados.get(0);
+
+                    for (int i = 1; i < tiemposEjecutados.size(); i++) {
+                        if (tiemposEjecutados.get(i) < menorTiempo) {
+                            menorTiempo = tiemposEjecutados.get(i);
+                            indiceMenorTiempo = i;
+                        }
+                    }
+                    //resalta de verde el menor tiempo
+                    Highlighter highlighter = informacionTiempos.getHighlighter();
+                    Highlighter.HighlightPainter marcador = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                    try {
+                        int inicioInfoTiempo = informacionTiempos.getLineStartOffset(indiceMenorTiempo);
+                        int finInfoTiempo = informacionTiempos.getLineEndOffset(indiceMenorTiempo);
+                        highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
+                    } catch (BadLocationException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
-                //resalta de verde el menor tiempo
-                Highlighter highlighter = informacionTiempos.getHighlighter();
-                Highlighter.HighlightPainter marcador = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
-                try {
-                    int inicioInfoTiempo = informacionTiempos.getLineStartOffset(tiempoMenor);
-                    int finInfoTiempo = informacionTiempos.getLineEndOffset(tiempoMenor);
-                    highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
-                } catch (BadLocationException ex) {
-                    throw new RuntimeException(ex);
-                }
-                tiempoMenor=0;
             }
         });
 
