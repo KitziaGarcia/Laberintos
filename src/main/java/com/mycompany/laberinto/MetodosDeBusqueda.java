@@ -2,7 +2,7 @@ package com.mycompany.laberinto;
 
 import java.util.*;
 
-public class Ordenamientos {
+public class MetodosDeBusqueda {
 
     public ArrayList<Nodo> bfs(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas) {
         Queue<Nodo> cola = new LinkedList<>();

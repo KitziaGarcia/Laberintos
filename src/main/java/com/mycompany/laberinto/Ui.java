@@ -7,7 +7,6 @@ package com.mycompany.laberinto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -18,7 +17,7 @@ public class Ui extends JFrame {
     private LaberintoPanel laberintoPanel;
     private LaberintoGrafo laberintoGrafo;
     private GeneradorDeLaberinto generadorDeLaberinto;
-    private Ordenamientos metodosOrdenamientos;
+    private MetodosDeBusqueda metodosMetodosDeBusqueda;
     private JPanel grafo;
     private JButton borrarBoton;
     private JButton regresarMenu;
@@ -39,7 +38,7 @@ public class Ui extends JFrame {
         tiempoSegBFS = 100;
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
-        metodosOrdenamientos = new Ordenamientos();
+        metodosMetodosDeBusqueda = new MetodosDeBusqueda();
         JScrollPane scrollPane = new JScrollPane(laberintoPanel);
         grafo.setLayout(new BorderLayout());
         grafo.add(scrollPane, BorderLayout.CENTER);
@@ -56,7 +55,7 @@ public class Ui extends JFrame {
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
         generarYMostrarLaberintoUsuario(matriz);
-        metodosOrdenamientos = new Ordenamientos();
+        metodosMetodosDeBusqueda = new MetodosDeBusqueda();
         JScrollPane scrollPane = new JScrollPane(laberintoPanel);
         grafo.setLayout(new BorderLayout());
         grafo.add(scrollPane, BorderLayout.CENTER);
@@ -140,7 +139,7 @@ public class Ui extends JFrame {
                 if(bfsBoton.isSelected()){
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
-                    ArrayList<Nodo> lista = metodosOrdenamientos.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
+                    ArrayList<Nodo> lista = metodosMetodosDeBusqueda.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
                     laberintoPanel.setCaminoResuelto(lista);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
@@ -160,7 +159,7 @@ public class Ui extends JFrame {
 
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
-                    ArrayList<Nodo> lista = metodosOrdenamientos.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
+                    ArrayList<Nodo> lista = metodosMetodosDeBusqueda.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
                     laberintoPanel.setCaminoResuelto(lista);
                     long tiempoFinal = System.nanoTime();
@@ -172,7 +171,7 @@ public class Ui extends JFrame {
                 if(dijBoton.isSelected()){
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
-                    ArrayList<Nodo> lista = metodosOrdenamientos.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
+                    ArrayList<Nodo> lista = metodosMetodosDeBusqueda.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
                     laberintoPanel.setCaminoResuelto(lista);
                     System.out.println(lista);
