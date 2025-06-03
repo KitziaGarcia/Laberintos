@@ -15,13 +15,12 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
 public class Ui extends JFrame {
-    private LaberintoPanel laberintoPanel; 
-    private LaberintoGrafo laberintoGrafo; 
+    private LaberintoPanel laberintoPanel;
+    private LaberintoGrafo laberintoGrafo;
     private GeneradorDeLaberinto generadorDeLaberinto;
     private Ordenamientos metodosOrdenamientos;
     private JPanel grafo;
     private JButton borrarBoton;
-    private JButton ingresarCsvBoton;
     private JButton regresarMenu;
     private JLabel tiempos;
     private JTextArea informacionTiempos;
@@ -33,89 +32,65 @@ public class Ui extends JFrame {
     private double tiempoSegBFS;
     private double tiempoSegDisjktra;
 
+
     public Ui(int dificultad) {
         initComponents();
+        tiempoSegAEstrella = 100;
+        tiempoSegBFS = 100;
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
         JScrollPane scrollPane = new JScrollPane(laberintoPanel);
-        
         grafo.setLayout(new BorderLayout());
         grafo.add(scrollPane, BorderLayout.CENTER);
-
         grafo.setPreferredSize(new Dimension(600, 600));
-
         generarYMostrarLaberintoAleatorio(dificultad);
-        
         setTitle("Ventana de Laberintos");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
     }
 
-    //para cuando el usuario ingrese su laberinto
     public Ui(int[][] matriz) {
         initComponents();
-
-        laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
+        laberintoPanel = new LaberintoPanel();
+        generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
+        generarYMostrarLaberintoUsuario(matriz);
         metodosOrdenamientos = new Ordenamientos();
-
         JScrollPane scrollPane = new JScrollPane(laberintoPanel);
         grafo.setLayout(new BorderLayout());
         grafo.add(scrollPane, BorderLayout.CENTER);
         grafo.setPreferredSize(new Dimension(600, 600));
-
-        generarYMostrarLaberintoUsuario(matriz);
-
         setTitle("Ventana de Laberintos");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
 
     private void generarYMostrarLaberintoAleatorio(int dificultad) {
         int[][] matriz = generadorDeLaberinto.generarMatriz(dificultad);
-
-        System.out.println("HOLA1");
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                System.out.print(matriz[i][j] + " ");
-            }
-            System.out.println(); // Salto de línea al final de cada fila
-        }
-        System.out.println("ADIOS1");
-
-
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
         repaint();
-        System.out.println("Laberinto generado:");
         generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
-    //para cuando el usuario ingrese un laberinto
-    private void generarYMostrarLaberintoUsuario(int[][] matriz) {
+    public void generarYMostrarLaberintoUsuario(int[][] matriz) {
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
         repaint();
-        System.out.println("Laberinto generado:");
         generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         grafo = new JPanel();
         borrarBoton = new JButton("Borrar");
-        ingresarCsvBoton = new JButton("Generar con CSV");
         tiempos = new JLabel("Informacion tiempos");
         informacionTiempos = new JTextArea();
         bfsBoton = new JCheckBox("Algoritmo BFS");
         aBoton = new JCheckBox("Algoritmo A*");
         dijBoton = new JCheckBox("Algoritmo Dijkstra");
-        seleccionar = new JButton("DAB"); //cambiar el nombre de esto
+        seleccionar = new JButton("Enter");
         regresarMenu = new JButton("Regresar al menu");
 
         //para quitarle la cosa feo del boton
@@ -127,43 +102,13 @@ public class Ui extends JFrame {
         GroupLayout GrafoLayout = new GroupLayout(grafo);
         grafo.setLayout(GrafoLayout);
         GrafoLayout.setHorizontalGroup(
-            GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 617, Short.MAX_VALUE)
+                GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 617, Short.MAX_VALUE)
         );
         GrafoLayout.setVerticalGroup(
-            GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 641, Short.MAX_VALUE)
+                GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 641, Short.MAX_VALUE)
         );
-
-        ingresarCsvBoton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                File archivo = LecturaArchivo.buscarArchivo();
-                if (archivo != null) {
-                    LecturaArchivo.leerArchivo(archivo);
-
-                    //laberintoGrafo = LecturaArchivo.getGrafo();
-                    laberintoPanel = new LaberintoPanel();
-                    GeneradorDeLaberinto laberintos = new GeneradorDeLaberinto();
-                    int[][] matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(LecturaArchivo.getListaAdyacencia());
-
-                    System.out.println("HOLA");
-                    for (int i = 0; i < matriz.length; i++) {
-                        for (int j = 0; j < matriz[i].length; j++) {
-                            System.out.print(matriz[i][j] + " ");
-                        }
-                        System.out.println(); // Salto de línea al final de cada fila
-                    }
-                    System.out.println("ADIOS");
-
-                    generarYMostrarLaberintoUsuario(matriz);
-                    generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
-                    repaint();
-                } else {
-
-                }
-            }
-        });
 
         borrarBoton.addActionListener(new ActionListener() {
             @Override
@@ -180,13 +125,11 @@ public class Ui extends JFrame {
         regresarMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MenuInicio menuInicio = new MenuInicio();
-                menuInicio.setVisible(true);
+                new MenuInicio().setVisible(true);
                 dispose();
             }
         });
 
-        //aqui estan todos los algoritmos, son como los botones
         seleccionar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,7 +192,6 @@ public class Ui extends JFrame {
                             indiceMenorTiempo = i;
                         }
                     }
-                    //resalta de verde el menor tiempo
                     Highlighter highlighter = informacionTiempos.getHighlighter();
                     Highlighter.HighlightPainter marcador = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
                     try {
@@ -266,20 +208,18 @@ public class Ui extends JFrame {
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(grafo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(ingresarCsvBoton)
                                         .addComponent(bfsBoton)
                                         .addComponent(aBoton)
                                         .addComponent(dijBoton)
+                                        .addComponent(seleccionar)
                                         .addComponent(borrarBoton)
                                         .addComponent(regresarMenu)
-                                        .addComponent(seleccionar)
                                         .addComponent(tiempos)
                                         .addComponent(informacionTiempos))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -291,19 +231,17 @@ public class Ui extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(51, 51, 51)
-                                                .addComponent(ingresarCsvBoton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(bfsBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(aBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(dijBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(seleccionar)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(borrarBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(regresarMenu)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(seleccionar)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(tiempos)
                                                 .addComponent(informacionTiempos))
@@ -313,13 +251,6 @@ public class Ui extends JFrame {
                                 .addContainerGap(32, Short.MAX_VALUE))
         );
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        //System.out.println("\nRecorrido del grafo en consola:");
-        //generadorDeLaberinto.recorrerGrafoConsola(laberintoGrafo);
-        //System.out.println("\nFin del programa");
     }
 
     public static void main(String args[]) {

@@ -2,6 +2,9 @@ package com.mycompany.laberinto;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -63,22 +66,41 @@ public class MenuInicio extends JFrame {
                     }
                 }
 
-                //generar la matriz con la lista de adyacencia del usuario
                 GeneradorDeLaberinto laberintos = new GeneradorDeLaberinto();
-                matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(listaAdyacencia);
-
-                for (int i = 0; i < matriz.length; i++) {
-                    for (int j = 0; j < matriz[i].length; j++) {
-                        System.out.print(matriz[i][j] + " ");
-                    }
-                    System.out.println();
-                }
+                matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(listaAdyacencia, 0);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Error");
             }
 
             dispose();
             new Ui(matriz).setVisible(true);
+        });
+
+        leerArchivo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File archivo = LecturaArchivo.buscarArchivo();
+                if (archivo != null) {
+                    LecturaArchivo.leerArchivo(archivo);
+                    GeneradorDeLaberinto laberintos = new GeneradorDeLaberinto();
+                    int[][] matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(LecturaArchivo.getListaAdyacencia(), 1);
+                    for (Integer nodo : LecturaArchivo.getListaAdyacencia().keySet()) {
+                        System.out.println(nodo + " -> " + LecturaArchivo.getListaAdyacencia().get(nodo));
+                    }
+
+                    System.out.println("HOLA");
+                    for (int i = 0; i < matriz.length; i++) {
+                        for (int j = 0; j < matriz[i].length; j++) {
+                            System.out.print(matriz[i][j] + " ");
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("ADIOS");
+                    new Ui(matriz).setVisible(true);
+                } else {
+
+                }
+            }
         });
 
 

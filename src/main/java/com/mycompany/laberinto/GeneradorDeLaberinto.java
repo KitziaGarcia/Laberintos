@@ -14,19 +14,19 @@ public class GeneradorDeLaberinto {
     public int[][] generarMatriz(int dificultad) {
         int filas, columnas;
         switch (dificultad) {
-            case 1: // Fácil
+            case 1:
                 filas = 7;
                 columnas = 7;
                 break;
-            case 2: // Medio
+            case 2:
                 filas = 15;
                 columnas = 15;
                 break;
-            case 3: // Difícil
+            case 3:
                 filas = 25;
                 columnas = 25;
                 break;
-            case 4: // Muy Difícil
+            case 4:
                 filas = 35;
                 columnas = 35;
                 break;
@@ -88,7 +88,7 @@ public class GeneradorDeLaberinto {
         return celdas;
     }
 
-    public int[][] generarMatrizDesdeListaAdyacenciaParedes(Map<Integer, List<Integer>> listaAdyacencia) {
+    public int[][] generarMatrizDesdeListaAdyacenciaParedes(Map<Integer, List<Integer>> listaAdyacencia, int indicador) {
         Set<Integer> nodos = new HashSet<>(listaAdyacencia.keySet());
         for (List<Integer> vecinos : listaAdyacencia.values()) {
             if (vecinos != null) {
@@ -117,10 +117,6 @@ public class GeneradorDeLaberinto {
             Arrays.fill(matriz[i], 1);
         }
 
-        for(int i = 0; i < n; i++){
-            matriz[i][i] = 0;
-        }
-
         for(Map.Entry<Integer, List<Integer>> entry : listaAdyacencia.entrySet()){
             int nodo = entry.getKey();
             Integer indiceNodo = nodoAIndice.get(nodo);
@@ -133,9 +129,11 @@ public class GeneradorDeLaberinto {
             for(Integer vecino : vecinos){
                 Integer indiceVecino = nodoAIndice.get(vecino);
 
-                if(indiceVecino != null){
+                if(indiceVecino != null && indicador != 1){
                     matriz[indiceNodo][indiceVecino] = 0;
                     matriz[indiceVecino][indiceNodo] = 0;
+                } else {
+                    matriz[indiceNodo][indiceVecino] = 0;
                 }
             }
         }
@@ -197,9 +195,7 @@ public class GeneradorDeLaberinto {
             }
         }
 
-        // Establecer inicio y fin
         Nodo nodoInicio = null;
-        // Buscar primera celda no pared desde arriba-izquierda
         for(int r=0; r<filas; r++){
             for(int c=0; c<columnas; c++){
                 if(!grafo.getNodo(r,c).isEsPared()){
@@ -211,7 +207,6 @@ public class GeneradorDeLaberinto {
         }
         
         Nodo nodoFin = null;
-        // Buscar primera celda no pared desde abajo-derecha
          for(int r=filas-1; r>=0; r--){
             for(int c=columnas-1; c>=0; c--){
                 Nodo candidatoFin = grafo.getNodo(r,c);

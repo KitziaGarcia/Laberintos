@@ -28,7 +28,8 @@ public class LaberintoPanel extends JPanel {
 
     public void setLaberinto(LaberintoGrafo grafo) {
         this.grafo = grafo;
-        repaint(); 
+        repaint();
+        revalidate();
     }
 
     @Override
@@ -76,6 +77,8 @@ public class LaberintoPanel extends JPanel {
                 g2d.setColor(Color.WHITE);
                 
                 List<Nodo> vecinos = nodoActual.getVecinos();
+                System.out.println("Nodo (" + i + ", " + j + ") tiene " + vecinos.size() + " vecinos.");
+
 
                 for (Nodo vecino : vecinos) {
                     if (vecino.getY() == nodoActual.getY() + 1) {
@@ -105,25 +108,6 @@ public class LaberintoPanel extends JPanel {
                 }
             }
         }
-
-        // Dibujar el camino de la solución
-        /*if (grafo.getNodoFin() != null && (grafo.getNodoFin().getPadre() != null || grafo.getNodoFin().isEsInicio())) {
-            g2d.setColor(Color.BLUE);
-            float grosorCamino = Math.max(1f, tamanoCelda / 6f);
-            g2d.setStroke(new BasicStroke(grosorCamino));
-
-            Nodo actualEnCamino = grafo.getNodoFin();
-            while (actualEnCamino != null && actualEnCamino.getPadre() != null) {
-                Nodo padreEnCamino = actualEnCamino.getPadre();
-                int x1 = distanciaX + actualEnCamino.getX() * tamanoCelda + tamanoCelda / 2;
-                int y1 = distanciaY + actualEnCamino.getY() * tamanoCelda + tamanoCelda / 2;
-                int x2 = distanciaX + padreEnCamino.getX() * tamanoCelda + tamanoCelda / 2;
-                int y2 = distanciaY + padreEnCamino.getY() * tamanoCelda + tamanoCelda / 2;
-                g2d.drawLine(x1, y1, x2, y2);
-                actualEnCamino = padreEnCamino;
-            }
-            g2d.setStroke(new BasicStroke(1));
-        }*/
 
         if (caminoResuelto != null) {
             pintarCamino(g2d);

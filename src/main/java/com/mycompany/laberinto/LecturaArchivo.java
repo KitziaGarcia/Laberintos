@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class LecturaArchivo {
     private static LaberintoGrafo grafo;
     private static int[][] matriz;
@@ -42,15 +41,14 @@ public class LecturaArchivo {
                     String[] partes = linea.split(":");
                     int nodoPrincipal = Integer.parseInt(partes[0].trim());
 
-                    String[] adyacentesStr = partes[1].split(",");
-                    List<Integer> adyacentes = new ArrayList<>();
-                    for (String nodo : adyacentesStr) {
-                        if (!nodo.trim().isEmpty()) {
-                            adyacentes.add(Integer.parseInt(nodo.trim()));
+                    String[] adyacentes = partes[1].split(",");
+                    List<Integer> vecinos = new ArrayList<>();
+                    for (String nodo : adyacentes) {
+                        if (!nodo.isEmpty()) {
+                            vecinos.add(Integer.parseInt(nodo));
                         }
                     }
-
-                    listaAdyacencia.put(nodoPrincipal, adyacentes);
+                    listaAdyacencia.put(nodoPrincipal, vecinos);
                 } else {
                     String[] dimensiones = linea.split(",");
                     filas = Integer.parseInt(dimensiones[0].trim());
@@ -58,10 +56,6 @@ public class LecturaArchivo {
                     System.out.println("FILAS: " + filas + "   COLUMNAS: " + columnas);
                 }
             }
-
-            // Ahora tienes el Map construido
-            // grafo = new LaberintoGrafo(filas, columnas, listaAdyacencia);
-
         } catch (FileNotFoundException ex) {
             System.err.println("No encontró el archivo");
         } catch (IOException ex) {
