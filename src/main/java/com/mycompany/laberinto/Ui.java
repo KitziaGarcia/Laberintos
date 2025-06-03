@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 public class Ui extends JFrame {
     private LaberintoPanel laberintoPanel; 
@@ -17,13 +20,14 @@ public class Ui extends JFrame {
     private GeneradorDeLaberinto generadorDeLaberinto;
     private Ordenamientos metodosOrdenamientos;
     private JPanel grafo;
-    private JButton bfsBoton;
-    private JButton aEstrellaBoton;
     private JButton borrarBoton;
-    private JButton dijkstraBoton;
     private JButton ingresarCsvBoton;
     private JLabel tiempos;
     private JTextArea informacionTiempos;
+    private JCheckBox bfsBoton;
+    private JCheckBox aBoton;
+    private JCheckBox dijBoton;
+    private JButton seleccionar;
     private double tiempoSegAEstrella;
     private double tiempoSegBFS;
     private double tiempoSegDisjktra;
@@ -107,18 +111,18 @@ public class Ui extends JFrame {
     private void initComponents() {
 
         grafo = new JPanel();
-        bfsBoton = new JButton("Algoritmo BFS");
-        aEstrellaBoton = new JButton("Algoritmo A*");
-        dijkstraBoton = new JButton("Algoritmo Dijkstra");
         borrarBoton = new JButton("Borrar");
         ingresarCsvBoton = new JButton("Generar con CSV");
         tiempos = new JLabel("Informacion tiempos");
         informacionTiempos = new JTextArea();
+        bfsBoton = new JCheckBox("Algoritmo BFS");
+        aBoton = new JCheckBox("Algoritmo A*");
+        dijBoton = new JCheckBox("Algoritmo Dijkstra");
+        seleccionar = new JButton("DAB"); //cambiar el nombre de esto
 
-        bfsBoton.setFocusPainted(false);
-        aEstrellaBoton.setFocusPainted(false);
-        dijkstraBoton.setFocusPainted(false);
+        //para quitarle la cosa feo del boton
         borrarBoton.setFocusPainted(false);
+        seleccionar.setFocusPainted(false);
         informacionTiempos.setEditable(false);
 
         GroupLayout GrafoLayout = new GroupLayout(grafo);
@@ -162,64 +166,89 @@ public class Ui extends JFrame {
             }
         });
 
-        bfsBoton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi.
-                laberintoPanel.setIndicadorParaBorrarCamino(0);
-                long tiempoInicio = System.nanoTime();
-                ArrayList<Nodo> lista = metodosOrdenamientos.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
-                laberintoPanel.setCaminoResuelto(lista);
-                long tiempoFinal = System.nanoTime();
-                tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
-                informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
-            }
-        });
-
-        aEstrellaBoton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi. DAAAAABB
-                for (ArrayList<Nodo> fila : laberintoGrafo.getNodos()) {
-                    for (Nodo nodo : fila) {
-                        nodo.setG(Integer.MAX_VALUE);
-                        nodo.setF(0);
-                        nodo.setPadre(null);
-                        nodo.setVisitado(false);
-                    }
-                }
-
-                laberintoPanel.setIndicadorParaBorrarCamino(0);
-                long tiempoInicio = System.nanoTime();
-                ArrayList<Nodo> lista = metodosOrdenamientos.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
-                System.out.println(lista);
-                laberintoPanel.setCaminoResuelto(lista);
-                long tiempoFinal = System.nanoTime();
-                tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
-                informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
-            }
-        });
-
-        dijkstraBoton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi.
-                laberintoPanel.setIndicadorParaBorrarCamino(0);
-                long tiempoInicio = System.nanoTime();
-                ArrayList<Nodo> lista = metodosOrdenamientos.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
-                System.out.println(lista);
-                laberintoPanel.setCaminoResuelto(lista);
-                System.out.println(lista);
-                long tiempoFinal = System.nanoTime();
-                tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
-                informacionTiempos.append(String.format("Disjktra: %.6f segundos\n", tiempoSegDisjktra));
-            }
-        });
-
         borrarBoton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 laberintoPanel.setIndicadorParaBorrarCamino(1);
                 repaint();
                 informacionTiempos.setText("");
+                bfsBoton.setSelected(false);
+                aBoton.setSelected(false);
+                dijBoton.setSelected(false);
+            }
+        });
+
+        //aqui estan todos los algoritmos, son como los botones
+        seleccionar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                informacionTiempos.setText("");
+                int tiempoMenor;
+
+                if(bfsBoton.isSelected()){
+                    tiempoSegBFS = 10;
+                    laberintoPanel.setIndicadorParaBorrarCamino(0);
+                    long tiempoInicio = System.nanoTime();
+                    ArrayList<Nodo> lista = metodosOrdenamientos.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
+                    laberintoPanel.setCaminoResuelto(lista);
+                    long tiempoFinal = System.nanoTime();
+                    tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                    informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
+                }
+
+                if(aBoton.isSelected()){
+                    tiempoSegAEstrella = 10;
+                    for (ArrayList<Nodo> fila : laberintoGrafo.getNodos()) {
+                        for (Nodo nodo : fila) {
+                            nodo.setG(Integer.MAX_VALUE);
+                            nodo.setF(0);
+                            nodo.setPadre(null);
+                            nodo.setVisitado(false);
+                        }
+                    }
+
+                    laberintoPanel.setIndicadorParaBorrarCamino(0);
+                    long tiempoInicio = System.nanoTime();
+                    ArrayList<Nodo> lista = metodosOrdenamientos.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
+                    System.out.println(lista);
+                    laberintoPanel.setCaminoResuelto(lista);
+                    long tiempoFinal = System.nanoTime();
+                    tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                    informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
+                }
+
+                if(dijBoton.isSelected()){
+                    tiempoSegDisjktra = 10;
+                    laberintoPanel.setIndicadorParaBorrarCamino(0);
+                    long tiempoInicio = System.nanoTime();
+                    ArrayList<Nodo> lista = metodosOrdenamientos.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
+                    System.out.println(lista);
+                    laberintoPanel.setCaminoResuelto(lista);
+                    System.out.println(lista);
+                    long tiempoFinal = System.nanoTime();
+                    tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                    informacionTiempos.append(String.format("Disjktra: %.6f segundos\n", tiempoSegDisjktra));
+                }
+
+                if(tiempoSegBFS < tiempoSegAEstrella && tiempoSegBFS < tiempoSegDisjktra){
+                    tiempoMenor = 0;
+                } else if(tiempoSegAEstrella < tiempoSegDisjktra && tiempoSegAEstrella < tiempoSegBFS){
+                    tiempoMenor = 1;
+                } else{
+                    tiempoMenor = 2;
+                }
+
+                //resalta de verde el menor tiempo
+                Highlighter highlighter = informacionTiempos.getHighlighter();
+                Highlighter.HighlightPainter marcador = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+                try {
+                    int inicioInfoTiempo = informacionTiempos.getLineStartOffset(tiempoMenor);
+                    int finInfoTiempo = informacionTiempos.getLineEndOffset(tiempoMenor);
+                    highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
+                } catch (BadLocationException ex) {
+                    throw new RuntimeException(ex);
+                }
+                tiempoMenor=0;
             }
         });
 
@@ -234,9 +263,10 @@ public class Ui extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(ingresarCsvBoton)
                                         .addComponent(bfsBoton)
-                                        .addComponent(aEstrellaBoton)
-                                        .addComponent(dijkstraBoton)
+                                        .addComponent(aBoton)
+                                        .addComponent(dijBoton)
                                         .addComponent(borrarBoton)
+                                        .addComponent(seleccionar)
                                         .addComponent(tiempos)
                                         .addComponent(informacionTiempos))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -252,11 +282,13 @@ public class Ui extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(bfsBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(aEstrellaBoton)
+                                                .addComponent(aBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(dijkstraBoton)
+                                                .addComponent(dijBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(borrarBoton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(seleccionar)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(tiempos)
                                                 .addComponent(informacionTiempos))
