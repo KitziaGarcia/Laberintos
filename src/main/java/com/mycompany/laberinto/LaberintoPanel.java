@@ -21,6 +21,7 @@ public class LaberintoPanel extends JPanel {
     private ArrayList<ArrayList<Nodo>> nodos;
     private ArrayList<Nodo> caminoResuelto;
     private int indicadorParaBorrarCamino;
+    private int color;
 
     public LaberintoPanel() {
         setBackground(Color.GRAY);
@@ -110,11 +111,11 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
-            pintarCamino(g2d);
+            pintarCamino(g2d, color);
         }
     }
 
-    private void pintarCamino(Graphics2D g2d) {
+    private void pintarCamino(Graphics2D g2d, int color) {
         anchoPanel = getWidth();
         altoPanel = getHeight();
         filas = grafo.getFilas();
@@ -138,7 +139,19 @@ public class LaberintoPanel extends JPanel {
                     if (indicadorParaBorrarCamino == 1) {
                         g2d.setColor(Color.WHITE);
                     } else {
-                        g2d.setColor(new Color(194, 84, 253));
+                        switch (color) {
+                            case 1:
+                                g2d.setColor(new Color(194, 84, 253));
+                                break;
+                                case 2:
+                                g2d.setColor(new Color(140, 143, 19));
+                                break;
+                            case 3:
+                                g2d.setColor(new Color(53, 91, 227));
+                                break;
+
+                        }
+
                     }
                     g2d.fillRect(xRect, yRect, tamanoCelda, tamanoCelda);
                 }
@@ -146,8 +159,9 @@ public class LaberintoPanel extends JPanel {
         }
     }
 
-    public void setCaminoResuelto(ArrayList<Nodo> camino) {
+    public void setCaminoResuelto(ArrayList<Nodo> camino, int color) {
         this.caminoResuelto = camino;
+        this.color = color;
         repaint();
     }
 

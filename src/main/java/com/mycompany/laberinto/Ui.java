@@ -140,7 +140,7 @@ public class Ui extends JFrame {
                     laberintoPanel.setIndicadorParaBorrarCamino(0);
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.bfs(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas());
-                    laberintoPanel.setCaminoResuelto(lista);
+                    laberintoPanel.setCaminoResuelto(lista,1);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegBFS = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegBFS));
@@ -161,7 +161,7 @@ public class Ui extends JFrame {
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.aEstrella(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
-                    laberintoPanel.setCaminoResuelto(lista);
+                    laberintoPanel.setCaminoResuelto(lista,2);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
                     informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
@@ -173,7 +173,7 @@ public class Ui extends JFrame {
                     long tiempoInicio = System.nanoTime();
                     ArrayList<Nodo> lista = metodosMetodosDeBusqueda.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
                     System.out.println(lista);
-                    laberintoPanel.setCaminoResuelto(lista);
+                    laberintoPanel.setCaminoResuelto(lista,3);
                     System.out.println(lista);
                     long tiempoFinal = System.nanoTime();
                     tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
