@@ -96,22 +96,26 @@ public class LaberintoPanel extends JPanel {
                     }
                 }
 
-                if (nodoActual.isEsInicio()) {
-                    g2d.setColor(new Color(144, 238, 144)); 
-                    g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
-                    g2d.setColor(Color.BLACK);
-                    g2d.drawString("S", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("S")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
-                } else if (nodoActual.isEsFin()) {
-                    g2d.setColor(new Color(255, 182, 193)); 
-                    g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
-                    g2d.setColor(Color.BLACK);
-                    g2d.drawString("E", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("E")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
-                }
+                pintarInicioYFin(nodoActual, g2d, xRect, yRect);
             }
         }
 
         if (caminoResuelto != null) {
             pintarCamino(g2d);
+        }
+    }
+
+    public void pintarInicioYFin(Nodo nodoActual, Graphics2D g2d, int xRect, int yRect) {
+        if (nodoActual.isEsInicio()) {
+            g2d.setColor(new Color(144, 238, 144));
+            g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString("S", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("S")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
+        } else if (nodoActual.isEsFin()) {
+            g2d.setColor(new Color(255, 182, 193));
+            g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString("E", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("E")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
         }
     }
 
@@ -155,6 +159,7 @@ public class LaberintoPanel extends JPanel {
                     }
                     g2d.fillRect(xRect, yRect, tamanoCelda, tamanoCelda);
                 }
+                pintarInicioYFin(nodoActual, g2d, xRect, yRect);
             }
         }
     }
