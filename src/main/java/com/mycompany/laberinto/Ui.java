@@ -7,9 +7,9 @@ package com.mycompany.laberinto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
-
 
 public class Ui extends JFrame {
     private LaberintoPanel laberintoPanel; 
@@ -20,16 +20,18 @@ public class Ui extends JFrame {
     private JButton bfsBoton;
     private JButton aEstrellaBoton;
     private JButton borrarBoton;
-    private JButton dijkstra;
+    private JButton dijkstraBoton;
+    private JButton ingresarCsvBoton;
     private JLabel tiempos;
     private JTextArea informacionTiempos;
     private double tiempoSegAEstrella;
     private double tiempoSegBFS;
+    private double tiempoSegDisjktra;
 
     public Ui(int dificultad) {
         initComponents();
-        double tiempoSegAEstrella = 100;
-        double tiempoSegBFS = 100;
+        tiempoSegAEstrella = 100;
+        tiempoSegBFS = 100;
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
@@ -51,6 +53,8 @@ public class Ui extends JFrame {
     //para cuando el usuario ingrese su laberinto
     public Ui(int[][] matriz) {
         initComponents();
+        generarYMostrarLaberintoUsuario(matriz);
+        generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
         laberintoPanel = new LaberintoPanel();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         metodosOrdenamientos = new Ordenamientos();
@@ -70,12 +74,23 @@ public class Ui extends JFrame {
     }
 
     private void generarYMostrarLaberintoAleatorio(int dificultad) {
-        int[][] matrizLaberinto = generadorDeLaberinto.generarMatriz(dificultad);
-        this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matrizLaberinto);
+        int[][] matriz = generadorDeLaberinto.generarMatriz(dificultad);
+
+        System.out.println("HOLA1");
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println(); // Salto de línea al final de cada fila
+        }
+        System.out.println("ADIOS1");
+
+
+        this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
         repaint();
         System.out.println("Laberinto generado:");
-        generadorDeLaberinto.dibujarMatrizConsola(matrizLaberinto, laberintoGrafo);
+        generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
     //para cuando el usuario ingrese un laberinto
@@ -94,27 +109,58 @@ public class Ui extends JFrame {
         grafo = new JPanel();
         bfsBoton = new JButton("Algoritmo BFS");
         aEstrellaBoton = new JButton("Algoritmo A*");
-        dijkstra = new JButton("Algoritmo Dijkstra"); //no hace nada, falta poner el algoritmo
+        dijkstraBoton = new JButton("Algoritmo Dijkstra");
         borrarBoton = new JButton("Borrar");
+        ingresarCsvBoton = new JButton("Generar con CSV");
         tiempos = new JLabel("Informacion tiempos");
         informacionTiempos = new JTextArea();
 
         bfsBoton.setFocusPainted(false);
         aEstrellaBoton.setFocusPainted(false);
-        dijkstra.setFocusPainted(false);
+        dijkstraBoton.setFocusPainted(false);
         borrarBoton.setFocusPainted(false);
         informacionTiempos.setEditable(false);
 
-        GroupLayout GtafoLayout = new GroupLayout(grafo);
-        grafo.setLayout(GtafoLayout);
-        GtafoLayout.setHorizontalGroup(
-            GtafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        GroupLayout GrafoLayout = new GroupLayout(grafo);
+        grafo.setLayout(GrafoLayout);
+        GrafoLayout.setHorizontalGroup(
+            GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 617, Short.MAX_VALUE)
         );
-        GtafoLayout.setVerticalGroup(
-            GtafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        GrafoLayout.setVerticalGroup(
+            GrafoLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 641, Short.MAX_VALUE)
         );
+
+        ingresarCsvBoton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File archivo = LecturaArchivo.buscarArchivo();
+                if (archivo != null) {
+                    LecturaArchivo.leerArchivo(archivo);
+
+                    //laberintoGrafo = LecturaArchivo.getGrafo();
+                    laberintoPanel = new LaberintoPanel();
+                    GeneradorDeLaberinto laberintos = new GeneradorDeLaberinto();
+                    int[][] matriz = laberintos.generarMatrizDesdeListaAdyacenciaParedes(LecturaArchivo.getListaAdyacencia());
+
+                    System.out.println("HOLA");
+                    for (int i = 0; i < matriz.length; i++) {
+                        for (int j = 0; j < matriz[i].length; j++) {
+                            System.out.print(matriz[i][j] + " ");
+                        }
+                        System.out.println(); // Salto de línea al final de cada fila
+                    }
+                    System.out.println("ADIOS");
+
+                    generarYMostrarLaberintoUsuario(matriz);
+                    generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
+                    repaint();
+                } else {
+
+                }
+            }
+        });
 
         bfsBoton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -149,7 +195,22 @@ public class Ui extends JFrame {
                 laberintoPanel.setCaminoResuelto(lista);
                 long tiempoFinal = System.nanoTime();
                 tiempoSegAEstrella = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
-                informacionTiempos.append(String.format("BFS: %.6f segundos\n", tiempoSegAEstrella));
+                informacionTiempos.append(String.format("A*: %.6f segundos\n", tiempoSegAEstrella));
+            }
+        });
+
+        dijkstraBoton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                //jButton1ActionPerformed(evt); Esto lo puso Ale creo que para ir resolviendo el grafo o algo asi.
+                laberintoPanel.setIndicadorParaBorrarCamino(0);
+                long tiempoInicio = System.nanoTime();
+                ArrayList<Nodo> lista = metodosOrdenamientos.dijkstra(laberintoGrafo.getNodoInicio(), laberintoGrafo.getNodoFin(), generadorDeLaberinto.getListaAdyacencia(), laberintoGrafo.getFilas(), laberintoGrafo.getColumnas(), laberintoGrafo.getNodos());
+                System.out.println(lista);
+                laberintoPanel.setCaminoResuelto(lista);
+                System.out.println(lista);
+                long tiempoFinal = System.nanoTime();
+                tiempoSegDisjktra = (tiempoFinal - tiempoInicio) / 1_000_000_000.0;
+                informacionTiempos.append(String.format("Disjktra: %.6f segundos\n", tiempoSegDisjktra));
             }
         });
 
@@ -170,11 +231,11 @@ public class Ui extends JFrame {
                         .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(grafo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                // Aquí todos los botones juntos en paralelo para que estén en una columna
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(ingresarCsvBoton)
                                         .addComponent(bfsBoton)
                                         .addComponent(aEstrellaBoton)
-                                        .addComponent(dijkstra)
+                                        .addComponent(dijkstraBoton)
                                         .addComponent(borrarBoton)
                                         .addComponent(tiempos)
                                         .addComponent(informacionTiempos))
@@ -187,12 +248,13 @@ public class Ui extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(51, 51, 51)
-                                                // Aquí apilas los botones uno debajo de otro
+                                                .addComponent(ingresarCsvBoton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(bfsBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(aEstrellaBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(dijkstra)
+                                                .addComponent(dijkstraBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(borrarBoton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -206,10 +268,11 @@ public class Ui extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("\nRecorrido del grafo en consola:");
-        generadorDeLaberinto.recorrerGrafoConsola(laberintoGrafo);
-        System.out.println("\nFin del programa");
+        //System.out.println("\nRecorrido del grafo en consola:");
+        //generadorDeLaberinto.recorrerGrafoConsola(laberintoGrafo);
+        //System.out.println("\nFin del programa");
     }
 
     public static void main(String args[]) {

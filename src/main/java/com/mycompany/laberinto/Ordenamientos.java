@@ -110,77 +110,54 @@ public class Ordenamientos {
     }
 
     public ArrayList<Nodo> dijkstra(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas, ArrayList<ArrayList<Nodo>> nodos) {
-        // Cola de prioridad que ordena los nodos por su valor G (Distancia)
-        PriorityQueue<Nodo> noVisitados = new PriorityQueue<>((a, b) -> Integer.compare(a.getG(), b.getG()));
+        PriorityQueue<Nodo> noVisitados = new PriorityQueue<>();
         boolean[] visitados = new boolean[filas * columnas];
-        Nodo actual = null; // valor arbitrario
-        int indexActual = 0; // Valor arbitrario
-        // Como en Dijkstra no se conocen las distancias entre los nodos a excepcion del origen
-        // establecemos el valor de G (distancia) a todos los nodos
+
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 nodos.get(i).get(j).setG(Integer.MAX_VALUE);
                 nodos.get(i).get(j).setPadre(null);
             }
         }
-        // Encontramos el nodo de origen y se le asigna el valor G (distancia) a 0
-        int filaDeOrigen = origen.getY();
-        int columnaDeOrigen = origen.getX();
-        Nodo nodoDeOrigen = nodos.get(filaDeOrigen).get(columnaDeOrigen);
-        nodoDeOrigen.setG(0);
-        noVisitados.add(nodoDeOrigen);
-        // Ubicamos el nodo de destino y utilizamos get() para obtener la ubicacion del nodo de destino
-        int filaDeDestino = destino.getY();
-        int columnaDeDestino = destino.getX();
-        Nodo nodoDestino = nodos.get(filaDeDestino).get(columnaDeDestino);
-        // Inicio del bucle principal del algoritmo en donde seguira recorriendo los nodos sin repetir ninguno
-        // hasta encontrar el nodo de destino
+
+        Nodo nodoOrigen = nodos.get(origen.getY()).get(origen.getX());
+        nodoOrigen.setG(0);
+        noVisitados.add(nodoOrigen);
+        Nodo nodoDestino = nodos.get(destino.getY()).get(destino.getX());
+
         while (!noVisitados.isEmpty()) {
-            actual = noVisitados.poll();
-            indexActual = actual.posicion(columnaDeDestino);
-            if (visitados[indexActual]) {
-                continue;
-            }
+            Nodo actual = noVisitados.poll();
+            int indexActual = actual.posicion(columnas);
+
+            if (visitados[indexActual]) continue;
             visitados[indexActual] = true;
-        }
-        // Verificamos que se halla llegado al nodo deseado
-        if (indexActual == nodoDestino.posicion(columnas)) {
-            // Recorremos el camino desde el nodo de origen hasta el nodo de destino y lo guardamos en un arraylist
-            ArrayList<Nodo> caminoRecorrido = new ArrayList<>();
-            Nodo nodoActual = actual;
-            while (nodoActual != null) {
-                caminoRecorrido.add(nodoActual);
-                nodoActual = nodoActual.getPadre();
-            }
-            // Hacemos un reverse ya que los padres recorren del destino al origen, no del origen al destino como lo
-            // requerimos
-            Collections.reverse(caminoRecorrido);
-            return caminoRecorrido;
-        }
-            // Exploramos a los nodos vecinos del nodo en el que nos encontramos
-        for (Nodo vecino : listaGrafo.get(indexActual)) {
-            int indexVecino = vecino.posicion(columnas);
-            // Si ya lo recorrimos, se salta
-            if (visitados[indexVecino]) {
-                continue;
+
+            if (actual.equals(nodoDestino)) {
+                ArrayList<Nodo> caminoRecorrido = new ArrayList<>();
+                Nodo nodoActual = actual;
+                while (nodoActual != null) {
+                    caminoRecorrido.add(nodoActual);
+                    nodoActual = nodoActual.getPadre();
+                }
+                Collections.reverse(caminoRecorrido);
+                return caminoRecorrido;
             }
 
-            // Calculamos la distancia entre los nodos, cada nodo tiene un peso de 1
-            int filaVecino = vecino.getY();
-            int columnaVecino = vecino.getX();
-            Nodo vecinoNodo = nodos.get(filaVecino).get(columnaVecino);
-            int nuevaDistancia = actual.getG() + 1;
+            for (Nodo vecino : listaGrafo.get(indexActual)) {
+                int indexVecino = vecino.posicion(columnas);
+                if (visitados[indexVecino]) continue;
 
-            // Si se encuentra un camino con menor peso que el actual, lo cambiamos
-            if (nuevaDistancia < vecinoNodo.getG()) {
-                vecinoNodo.setG(nuevaDistancia);
-                vecinoNodo.setPadre(actual);
-                noVisitados.add(vecinoNodo);
+                Nodo vecinoNodo = nodos.get(vecino.getY()).get(vecino.getX());
+                int nuevaDistancia = actual.getG() + 1;
+
+                if (nuevaDistancia < vecinoNodo.getG()) {
+                    vecinoNodo.setG(nuevaDistancia);
+                    vecinoNodo.setPadre(actual);
+                    noVisitados.add(vecinoNodo);
+                }
             }
         }
-            // Si no se encuentra ningun camino
-                return null;
-        }
-
+        return null;
     }
+}
 

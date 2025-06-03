@@ -1,5 +1,6 @@
 package com.mycompany.laberinto;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class GeneradorDeLaberinto {
@@ -156,7 +157,7 @@ public class GeneradorDeLaberinto {
 
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
-                //System.out.println("NODO: " + grafo.getNodo(i,j));
+                System.out.println("NODOssss: " + grafo.getNodo(i,j));
             }
         }
 
@@ -258,83 +259,6 @@ public class GeneradorDeLaberinto {
         else if (nodoInicio != null) grafo.setNodoFin(nodoInicio); 
 
         return grafo;
-    }
-
-   
-    public void recorrerGrafoConsola(LaberintoGrafo grafo) {
-        if (grafo == null || grafo.getNodoInicio() == null) {
-            System.out.println("Error! El grafo es nulo o no tiene un nodo de inicio ");
-            return;
-        }
-
-        System.out.println("Recorrido del grafo ");
-        System.out.println("Nodo de inicio: (" + grafo.getNodoInicio().getX() + ", " + grafo.getNodoInicio().getY() + ")");
-        if (grafo.getNodoFin() != null) {
-            System.out.println("Nodo de fin: (" + grafo.getNodoFin().getX() + ", " + grafo.getNodoFin().getY() + ")");
-        }
-        System.out.println("-------------------------------------");
-
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        Nodo nodoActual = grafo.getNodoInicio();
-   
-        grafo.reiniciarNodosParaBusqueda(); 
-        nodoActual.setVisitado(true);
-
-        while (true) {
-            System.out.println("\nEstás en el nodo: (" + nodoActual.getX() + ", " + nodoActual.getY() + ")");
-
-            if (nodoActual.isEsFin()) {
-                System.out.println("Felicidades! Has llegado al fin ");
-                break;
-            }
-
-            List<Nodo> vecinos = nodoActual.getVecinos();
-            
-            if (vecinos.isEmpty()) {
-                System.out.println("Este nodo no tiene caminos directos ");
-                if (nodoActual.getPadre() != null) {
-                    System.out.println("Volviendo al nodo anterior ");
-                    nodoActual = nodoActual.getPadre();
-                    continue;
-                } else {
-                    System.out.println("No hay nodo anterior al cual volver ");
-                    break;
-                }
-            }
-
-            System.out.println("Caminos disponibles:");
-            for (int i = 0; i < vecinos.size(); i++) {
-                Nodo vecino = vecinos.get(i);
-                System.out.println((i + 1) + ": (" + vecino.getX() + ", " + vecino.getY() + ")" + (vecino.isVisitado() ? " [Ya Visitado]" : ""));
-            }
-            System.out.println("0: Salir del recorrido");
-            System.out.print("Elige un camino para moverte o 0 para salir: ");
-
-            int eleccion = -1;
-            if (scanner.hasNextInt()) {
-                eleccion = scanner.nextInt();
-            } else {
-                System.out.println("Entrada no válida ");
-                scanner.next(); 
-                continue;
-            }
-
-            if (eleccion == 0) {
-                System.out.println("Saliste del recorrido");
-                break;
-            }
-
-            if (eleccion > 0 && eleccion <= vecinos.size()) {
-                Nodo siguienteNodo = vecinos.get(eleccion - 1);
-                
-                    siguienteNodo.setPadre(nodoActual); 
-                    nodoActual = siguienteNodo;
-                    nodoActual.setVisitado(true);
-               
-            } else {
-                System.out.println("Opción no válida ");
-            }
-        }
     }
 
     public void dibujarMatrizConsola(int[][] matriz, LaberintoGrafo grafo) {

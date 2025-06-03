@@ -25,6 +25,25 @@ public class LaberintoGrafo {
         }
     }
 
+    public LaberintoGrafo(int filas, int columnas, ArrayList<String[]> valores) {
+        this.filas = filas;
+        this.columnas = columnas;
+        this.nodos = new ArrayList<>();
+
+        for (int i = 0; i < filas; i++) {
+            ArrayList<Nodo> fila = new ArrayList<>();
+            String[] valoresFila = valores.get(i);
+
+            for (int j = 0; j < columnas; j++) {
+                int valor = Integer.parseInt(valoresFila[j]);
+                Nodo nodo = new Nodo(j, i, valor, 0);
+                nodo.setG(Integer.MAX_VALUE);
+                fila.add(nodo);
+            }
+            nodos.add(fila);
+        }
+    }
+
     public Nodo getNodo(int fila, int columna) {
         if (fila >= 0 && fila < filas && columna >= 0 && columna < columnas) {
             return nodos.get(fila).get(columna);
