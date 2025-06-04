@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+// GUI en la cual se muestra el laberinto, se seleccionan los metodos de busqueda, se pinta el camino resuelto en el
+// menor tiempo y se muestra cual fue el metodo de busqueda mas rapido
 public class LaberintoPanel extends JPanel {
     private LaberintoGrafo grafo;
     private final int MARGEN = 20;
@@ -37,7 +39,7 @@ public class LaberintoPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        System.out.println("COLORR: " + getColor());
+        System.out.println("COLORRRRRRRRRRRRRRR: " + getColor());
         if (grafo == null || grafo.getNodos() == null || grafo.getFilas() == 0 || grafo.getColumnas() == 0) {
             return;
         }
@@ -100,6 +102,7 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
+            System.out.println("\nHOLAAAAAAAAAAAAAAAAAAAAAAA\n" + getColor());
             pintarCamino(g2d);
         }
     }
@@ -145,12 +148,15 @@ public class LaberintoPanel extends JPanel {
                         System.out.println("COLOR: " + getColor());
                         switch (getColor()) {
                             case 1:
+                                // BSF
                                 g2d.setColor(new Color(194, 84, 253));
                                 break;
                                 case 2:
+                                    // A*
                                 g2d.setColor(new Color(140, 143, 19));
                                 break;
                             case 3:
+                                // DIJKSTRA
                                 g2d.setColor(new Color(53, 91, 227));
                                 break;
                         }
@@ -165,6 +171,8 @@ public class LaberintoPanel extends JPanel {
 
     public void setCaminoResuelto(ArrayList<Nodo> camino) {
         this.caminoResuelto = camino;
+        // DEBUG: Color
+        System.out.println("\nPELOOOOOOOOOON: " + getColor());
         repaint();
     }
 

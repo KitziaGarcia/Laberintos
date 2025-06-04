@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
+// Esta clase busca y lee un archivo csv con una lista de adyacencia para que pueda ser convertida a un laberinto
 public class LecturaArchivo {
     private static LaberintoGrafo grafo;
     private static int[][] matriz;
@@ -14,6 +15,8 @@ public class LecturaArchivo {
 
     public static File buscarArchivo() {
 
+        // Se crea un fileChooser para que el usuario pueda buscar un archivo csv en cualquier directorio en su
+        // computadora
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Selecciona el archivo CSV del laberinto");
 
@@ -29,6 +32,9 @@ public class LecturaArchivo {
         }
     }
 
+    // Este metodo lee el archivo y obtiene la lista de adyacencia del laberinto
+    // Lee primero la primea linea que determina las dimensiones del laberinto
+    // El formato para la adyacencia de cada nodo es Nodo: nodoVecino, Vecino2, etc.
     public static void leerArchivo(File archivo) {
         String linea;
         listaAdyacencia = new HashMap<>();
@@ -63,6 +69,7 @@ public class LecturaArchivo {
         }
     }
 
+    // GETTERS
     public static Map<Integer, List<Integer>> getListaAdyacencia() {
         return listaAdyacencia;
     }

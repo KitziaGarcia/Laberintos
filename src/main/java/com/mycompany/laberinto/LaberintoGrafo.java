@@ -14,6 +14,7 @@ public class LaberintoGrafo {
         this.columnas = columnas;
         this.nodos = new ArrayList<>();
 
+        // Se incializa la matriz de nodos con valor 0 por defecto
         for (int i = 0; i < filas; i++) {
             ArrayList<Nodo> fila = new ArrayList<>();
             for (int j = 0; j < columnas; j++) {
@@ -25,6 +26,8 @@ public class LaberintoGrafo {
         }
     }
 
+    // En este constructor se obtienen los valores de los nodos del laberinto
+    // previamente de, por ejemplo, un archivo CSV o TXT
     public LaberintoGrafo(int filas, int columnas, ArrayList<String[]> valores) {
         this.filas = filas;
         this.columnas = columnas;
@@ -44,6 +47,7 @@ public class LaberintoGrafo {
         }
     }
 
+    // GETTERS Y SETTERS
     public Nodo getNodo(int fila, int columna) {
         if (fila >= 0 && fila < filas && columna >= 0 && columna < columnas) {
             return nodos.get(fila).get(columna);
