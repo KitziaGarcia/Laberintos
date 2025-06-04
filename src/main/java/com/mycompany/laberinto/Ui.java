@@ -70,6 +70,7 @@ public class Ui extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    //Metodo para generar y mostrar el laberinto para cuando se genera un laberinto aleatorio
     private void generarYMostrarLaberintoAleatorio(int dificultad) {
         int[][] matriz = generadorDeLaberinto.generarMatriz(dificultad);
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
@@ -78,6 +79,7 @@ public class Ui extends JFrame {
         generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
+    //Metodo para generar y mostrar el laberinto para cuando el usuario ingresa su laberinto
     public void generarYMostrarLaberintoUsuario(int[][] matriz) {
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
@@ -85,8 +87,8 @@ public class Ui extends JFrame {
         generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
+    //Inicializamos todos los componentes de nuestra GUI y agregamos listeners
     private void initComponents() {
-
         grafo = new JPanel();
         borrarBoton = new JButton("Borrar");
         tiempos = new JLabel("Informacion tiempos");
@@ -97,7 +99,6 @@ public class Ui extends JFrame {
         seleccionar = new JButton("Enter");
         regresarMenu = new JButton("Regresar al menu");
 
-        //para quitarle la cosa feo del boton
         borrarBoton.setFocusPainted(false);
         seleccionar.setFocusPainted(false);
         regresarMenu.setFocusPainted(false);
@@ -134,6 +135,8 @@ public class Ui extends JFrame {
             }
         });
 
+        //Gestiona la seleccion de los diferentes algoritmos, manda a llamar a los metodos para resolver el laberinto,
+        //pinta los caminos de diferentes colores dependiendo del algoritmo y toma el tiempo que tarda cada uno en resolver el laberinto
         seleccionar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -193,6 +196,8 @@ public class Ui extends JFrame {
                     tiemposEjecutados.add(tiempoSegDisjktra);
                 }
 
+                //Marca de color verde el algoritmo que tardo menos tiempo en resolver el laberinto y
+                // muestra el camino del algoritmo que tardo menos
                 if (!tiemposEjecutados.isEmpty()) {
                     int indiceMenorTiempo = 0;
                     double menorTiempo = tiemposEjecutados.get(0);
@@ -210,7 +215,7 @@ public class Ui extends JFrame {
                         int inicioInfoTiempo = informacionTiempos.getLineStartOffset(indiceMenorTiempo);
                         int finInfoTiempo = informacionTiempos.getLineEndOffset(indiceMenorTiempo);
                         highlighter.addHighlight(inicioInfoTiempo, finInfoTiempo, marcador);
-
+                        //Cada algoritmo le corresponde un color, pintara el camino resulto del mas rapido
                         System.out.println("\n------------\n" + tiemposEjecutados);
                         switch (indiceMenorTiempo) {
                             case 0:
@@ -240,6 +245,7 @@ public class Ui extends JFrame {
             }
         });
 
+        //Acomodo de los componentes de la GUI en la para seleccionar el algoritmo y resolver junto con otras cosas
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -259,6 +265,7 @@ public class Ui extends JFrame {
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        //Centramos los botones y todos los componentes que permiten al usuario interactuar con la GUI
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()

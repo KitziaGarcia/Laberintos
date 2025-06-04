@@ -37,7 +37,7 @@ public class LaberintoPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        System.out.println("COLORRRRRRRRRRRRRRR: " + getColor());
+        System.out.println("COLORR: " + getColor());
         if (grafo == null || grafo.getNodos() == null || grafo.getFilas() == 0 || grafo.getColumnas() == 0) {
             return;
         }
@@ -100,7 +100,6 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
-            System.out.println("\nHOLAAAAAAAAAAAAAAAAAAAAAAA\n" + getColor());
             pintarCamino(g2d);
         }
     }
@@ -166,7 +165,6 @@ public class LaberintoPanel extends JPanel {
 
     public void setCaminoResuelto(ArrayList<Nodo> camino) {
         this.caminoResuelto = camino;
-        System.out.println("\nPELOOOOOOOOOON: " + getColor());
         repaint();
     }
 
