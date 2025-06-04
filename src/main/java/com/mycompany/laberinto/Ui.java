@@ -87,6 +87,7 @@ public class Ui extends JFrame {
         generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
+
     //Inicializamos todos los componentes de nuestra GUI y agregamos listeners
     private void initComponents() {
         grafo = new JPanel();
