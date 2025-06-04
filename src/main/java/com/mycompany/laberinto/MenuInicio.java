@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
+// GUI del menu principal, se tienen 3 opciones: generar un laberinto aleatorio, ingresar manualmente una lista de adyacencia
+// o leer un csv con una lista de adyacencia
 public class MenuInicio extends JFrame {
     private JPanel panelMenu;
     private JButton laberintoAleatorio;
