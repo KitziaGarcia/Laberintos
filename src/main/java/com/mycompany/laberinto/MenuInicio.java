@@ -35,6 +35,7 @@ public class MenuInicio extends JFrame {
         grafoUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
         leerArchivo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        //Se manda a llamar el tipo de laberinto que escogio el usuario y se muestra
         laberintoAleatorio.addActionListener(e ->{
             String[] dificultades = {"Facil", "Normal", "Dificil", "Super dificil"};
             int opcionUsuario = JOptionPane.showOptionDialog(this, "Selecciona la dificultad del laberinto", "Laberinto",
@@ -43,6 +44,8 @@ public class MenuInicio extends JFrame {
             new Ui(opcionUsuario+1).setVisible(true);
         });
 
+        //Le pide al usuario la lista de adyacencia para luego crear una matriz y
+        // poder generar el laberinto a partir de la lista de adyacencia
         grafoUsuario.addActionListener(e -> {
             String listaAdyacenciaUsuario = JOptionPane.showInputDialog(null, "Ingrese la lista de adyacencia",
                     "Laberinto usuario", JOptionPane.QUESTION_MESSAGE);
@@ -78,6 +81,7 @@ public class MenuInicio extends JFrame {
             new Ui(matriz).setVisible(true);
         });
 
+        //El usuario ingresa el archivo que contiene la lista de adyacencia y a partir de esta crea el laberinto
         leerArchivo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,7 +109,7 @@ public class MenuInicio extends JFrame {
             }
         });
 
-
+        //Inicializamos los componentes y los agregamos al panel
         titulo = new JLabel("Laberintos con grafos");
         titulo = new JLabel("Laberintos con grafos");
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
