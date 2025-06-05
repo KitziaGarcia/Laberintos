@@ -277,46 +277,6 @@ public class GeneradorDeLaberinto {
         return grafo;
     }
 
-    // Este metodo dibuja el laberinto en la terminal
-    public void dibujarMatrizConsola(int[][] matriz, LaberintoGrafo grafo) {
-        if(matriz == null || matriz.length == 0){
-            System.out.println("Matriz vacia ");
-            return;
-        }
-        System.out.println("\nRepresentacion del laberinto en consola:");
-        int filas = matriz.length;
-        int columnas = matriz[0].length;
-
-        Nodo nodoInicio = (grafo != null) ? grafo.getNodoInicio() : null;
-        Nodo nodoFin = (grafo != null) ? grafo.getNodoFin() : null;
-
-        for(int i = 0; i < filas; i++){
-            for(int j = 0; j < columnas; j++){
-                boolean esInicio = false;
-                boolean esFin = false;
-
-                if(nodoInicio != null && nodoInicio.getY() == i && nodoInicio.getX() == j){
-                    esInicio = true;
-                }
-                if(nodoFin != null && nodoFin.getY() == i && nodoFin.getX() == j){
-                    esFin = true;
-                }
-
-                if(esInicio){
-                    System.out.print(" S "); // Inicio
-                } else if(esFin){
-                    System.out.print(" E "); // Fin
-                } else if(matriz[i][j] == 0){
-                    System.out.print("   "); // Camino
-                } else {
-                    System.out.print("[#]"); // Pared
-                }
-            }
-            System.out.println();
-        }
-        System.out.println("Leyenda: [S] = Inicio, [E] = Fin, [ ] = Camino, [#] = Pared");
-    }
-
     public ArrayList<ArrayList<Nodo>> getListaAdyacencia() {
         return listaAdyacencia;
     }

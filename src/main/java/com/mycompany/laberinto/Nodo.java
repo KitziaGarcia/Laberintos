@@ -2,18 +2,20 @@ package com.mycompany.laberinto;
 
 import java.util.ArrayList;
 
+// Esta clase modela a un nodo que es parte de un grafo.
 public class Nodo implements Comparable<Nodo> {
-    private int x; // Coordenada X columna
-    private int y; // Coordenada Y fila
-    private ArrayList<Nodo> vecinos; // Lista de adyacencia
-    private boolean visitado; // Para algoritmos de búsqueda
-    private boolean esInicio; // Marca si es el nodo de inicio
-    private boolean esFin; // Marca si es el nodo de destino
-    private boolean esPared; // Marca si es una pared
-    private Nodo padre; // Para reconstruir el camino en algoritmos de búsqueda
+    private int x;
+    private int y;
+    private ArrayList<Nodo> vecinos;
+    private boolean visitado;
+    private boolean esInicio;
+    private boolean esFin;
+    private boolean esPared;
+    private Nodo padre;
     private int f;
     private int g;
-    
+
+    // Constructor parametrizado.
     public Nodo(int x, int y, int f, int g) {
         this.x = x;
         this.y = y;
@@ -27,7 +29,7 @@ public class Nodo implements Comparable<Nodo> {
         this.padre = null;
     }
     
-    
+    // Permite conectar otros nodos con el nodo actual.
     public void conectarVecino(Nodo vecino) {
         if(esVecinoAdyacente(vecino) && !this.vecinos.contains(vecino)){
             this.vecinos.add(vecino);
@@ -35,35 +37,22 @@ public class Nodo implements Comparable<Nodo> {
             if(!vecino.vecinos.contains(this)){
                 vecino.vecinos.add(this);
             }
-            //System.out.println("NODIUX: " + this);
         }
     }
-    
-    
-    public void desconectarVecino(Nodo vecino) {
-        this.vecinos.remove(vecino);
-        vecino.vecinos.remove(this);
-    }
-    
-    
+
+    // Obtiene el estatus de si otro nodo tiene conexión con el actual.
     private boolean esVecinoAdyacente(Nodo otro) {
         int deltaX = Math.abs(this.x - otro.x);
         int deltaY = Math.abs(this.y - otro.y);
         
         return (deltaX == 1 && deltaY == 0) || (deltaX == 0 && deltaY == 1);
     }
-    
-   
+
+    // Getters y setters de los atributos.
     public int getGrado() {
         return vecinos.size();
     }
-    
-   
-    public void reiniciar() {
-        this.visitado = false;
-        this.padre = null;
-    }
-    
+
     public int getX() {
         return x;
     }
@@ -74,10 +63,6 @@ public class Nodo implements Comparable<Nodo> {
     
     public ArrayList<Nodo> getVecinos() {
         return new ArrayList<>(vecinos);
-    }
-    
-    public boolean isVisitado() {
-        return visitado;
     }
     
     public void setVisitado(boolean visitado) {
@@ -114,10 +99,6 @@ public class Nodo implements Comparable<Nodo> {
     
     public void setPadre(Nodo padre) {
         this.padre = padre;
-    }
-
-    public int getF() {
-        return f;
     }
 
     public int getG() {

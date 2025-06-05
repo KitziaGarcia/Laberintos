@@ -58,7 +58,6 @@ public class Ui extends JFrame {
         initComponents();
         generadorDeLaberinto = new GeneradorDeLaberinto();
         laberintoPanel = new LaberintoPanel();
-        generadorDeLaberinto.dibujarMatrizConsola(LecturaArchivo.getMatriz(), laberintoGrafo);
         generarYMostrarLaberintoUsuario(matriz);
         metodosMetodosDeBusqueda = new MetodosDeBusqueda();
         JScrollPane scrollPane = new JScrollPane(laberintoPanel);
@@ -76,7 +75,6 @@ public class Ui extends JFrame {
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
         repaint();
-        generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
     //Metodo para generar y mostrar el laberinto para cuando el usuario ingresa su laberinto
@@ -84,7 +82,6 @@ public class Ui extends JFrame {
         this.laberintoGrafo = generadorDeLaberinto.generarLaberinto(matriz);
         laberintoPanel.setLaberinto(this.laberintoGrafo);
         repaint();
-        generadorDeLaberinto.dibujarMatrizConsola(matriz, laberintoGrafo);
     }
 
 

@@ -2,8 +2,11 @@ package com.mycompany.laberinto;
 
 import java.util.*;
 
+// Esta clase cuenta con los tres métodos de búsqueda implementados en las soluciones del laberinto.
+// Cuenta con la lógica de cada uno dependiendo de sus características.
 public class MetodosDeBusqueda {
 
+    // Búsqueda por anchura (BFS).
     public ArrayList<Nodo> bfs(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas) {
         Queue<Nodo> cola = new LinkedList<>();
         boolean[] visitados = new boolean[filas * columnas];
@@ -12,6 +15,8 @@ public class MetodosDeBusqueda {
         visitados[indexOrigen] = true;
         cola.add(origen);
 
+        // Este algoritmo maneja una cola donde va ingresando los nodos visitados, se repite la lógica mientras haya alguno
+        // en la cola.
         while(!cola.isEmpty()){
             Nodo actual = cola.poll();
 
@@ -50,6 +55,7 @@ public class MetodosDeBusqueda {
         return camino;
     }
 
+    // A*.
     public ArrayList<Nodo> aEstrella(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas, ArrayList<ArrayList<Nodo>> nodos) {
         PriorityQueue<Nodo> noVisitados = new PriorityQueue<>();
         boolean[] visitados = new boolean[filas * columnas];
@@ -63,6 +69,8 @@ public class MetodosDeBusqueda {
         inicio.setF(calcularH(inicio, meta));
         noVisitados.add(inicio);
 
+        // En este algoritmo se manejó una cola de prioridad de nodos no visitados, en la cual se iban removiendo los
+        // nodos conforme se visitaran y se agregaban al arreglo de visitados.
         while(!noVisitados.isEmpty()){
             Nodo actual = noVisitados.poll();
             int indexActual = actual.posicion(columnas);
@@ -105,10 +113,12 @@ public class MetodosDeBusqueda {
         return null;
     }
 
+    // Este mpetodo calcula la h necesaria para el algoritmo A estrella.
     private int calcularH(Nodo nodo1, Nodo nodo2) {
         return Math.abs(nodo1.getX() - nodo2.getX()) + Math.abs(nodo1.getY() - nodo2.getY());
     }
 
+    // Dijkstra.
     public ArrayList<Nodo> dijkstra(Nodo origen, Nodo destino, ArrayList<ArrayList<Nodo>> listaGrafo, int filas, int columnas, ArrayList<ArrayList<Nodo>> nodos) {
         PriorityQueue<Nodo> noVisitados = new PriorityQueue<>();
         boolean[] visitados = new boolean[filas * columnas];
@@ -132,6 +142,7 @@ public class MetodosDeBusqueda {
             if(visitados[indexActual]) continue;
             visitados[indexActual] = true;
 
+            // Este fragmento fue corregido con IA para permitir que funcionara la lógica de manera correcta.
             if(actual.equals(nodoDestino)){
                 ArrayList<Nodo> caminoRecorrido = new ArrayList<>();
                 Nodo nodoActual = actual;

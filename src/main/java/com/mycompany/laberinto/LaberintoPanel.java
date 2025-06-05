@@ -35,11 +35,11 @@ public class LaberintoPanel extends JPanel {
         revalidate();
     }
 
+    // Este método pinta el laberinto creado con el grafo, pintando las celdas con blanco representando donde hay camino.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        System.out.println("COLORRRRRRRRRRRRRRR: " + getColor());
         if (grafo == null || grafo.getNodos() == null || grafo.getFilas() == 0 || grafo.getColumnas() == 0) {
             return;
         }
@@ -55,7 +55,7 @@ public class LaberintoPanel extends JPanel {
         nodos = grafo.getNodos();
 
         if (tamanoCelda <= 0) tamanoCelda = 1;
- 
+
         int distanciaX = MARGEN + (anchoPanel - 2 * MARGEN - columnas * tamanoCelda) / 2;
         int distanciaY = MARGEN + (altoPanel - 2 * MARGEN - filas * tamanoCelda) / 2;
 
@@ -79,7 +79,7 @@ public class LaberintoPanel extends JPanel {
                 g2d.drawRect(xRect, yRect, tamanoCelda, tamanoCelda);
 
                 g2d.setColor(Color.WHITE);
-                
+
                 List<Nodo> vecinos = nodoActual.getVecinos();
 
                 for (Nodo vecino : vecinos) {
@@ -87,7 +87,7 @@ public class LaberintoPanel extends JPanel {
                         g2d.drawLine(xRect + 1, yRect + tamanoCelda, xRect + tamanoCelda - 1, yRect + tamanoCelda);
                     }
                     if (vecino.getY() == nodoActual.getY() - 1) {
-                         g2d.drawLine(xRect + 1, yRect, xRect + tamanoCelda - 1, yRect);
+                        g2d.drawLine(xRect + 1, yRect, xRect + tamanoCelda - 1, yRect);
                     }
                     if (vecino.getX() == nodoActual.getX() + 1) {
                         g2d.drawLine(xRect + tamanoCelda, yRect + 1, xRect + tamanoCelda, yRect + tamanoCelda - 1);
@@ -102,25 +102,26 @@ public class LaberintoPanel extends JPanel {
         }
 
         if (caminoResuelto != null) {
-            System.out.println("\nHOLAAAAAAAAAAAAAAAAAAAAAAA\n" + getColor());
             pintarCamino(g2d);
         }
     }
 
+    // Este método pinta un cuadro donde se encuentra el inicio y el fin del laberinto.
     public void pintarInicioYFin(Nodo nodoActual, Graphics2D g2d, int xRect, int yRect) {
         if (nodoActual.isEsInicio()) {
             g2d.setColor(new Color(144, 238, 144));
             g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
             g2d.setColor(Color.BLACK);
-            g2d.drawString("S", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("S")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
+            g2d.drawString("S", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("S") / 2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent() / 2 - g2d.getFontMetrics().getDescent() / 2);
         } else if (nodoActual.isEsFin()) {
             g2d.setColor(new Color(255, 182, 193));
             g2d.fillRect(xRect + tamanoCelda / 4, yRect + tamanoCelda / 4, tamanoCelda / 2, tamanoCelda / 2);
             g2d.setColor(Color.BLACK);
-            g2d.drawString("E", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("E")/2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent()/2 - g2d.getFontMetrics().getDescent()/2 );
+            g2d.drawString("E", xRect + tamanoCelda / 2 - g2d.getFontMetrics().stringWidth("E") / 2, yRect + tamanoCelda / 2 + g2d.getFontMetrics().getAscent() / 2 - g2d.getFontMetrics().getDescent() / 2);
         }
     }
 
+    // Este método pinta la solución del laberinto, seleccionando un color diferente dependiendo del algoritmo utilizado.
     private void pintarCamino(Graphics2D g2d) {
         anchoPanel = getWidth();
         altoPanel = getHeight();
@@ -169,17 +170,18 @@ public class LaberintoPanel extends JPanel {
         }
     }
 
+    // Este método establece el camino obtenido a pintar para la solución.
     public void setCaminoResuelto(ArrayList<Nodo> camino) {
         this.caminoResuelto = camino;
-        // DEBUG: Color
-        System.out.println("\nPELOOOOOOOOOON: " + getColor());
         repaint();
     }
 
+    // Este método establece el indicador de cuando se necesita borrar la solución pintada.
     public void setIndicadorParaBorrarCamino(int indicadorParaBorrarCamino) {
         this.indicadorParaBorrarCamino = indicadorParaBorrarCamino;
     }
 
+    // Getter y setter del color.
     public void setColor(int color) {
         this.color = color;
     }
